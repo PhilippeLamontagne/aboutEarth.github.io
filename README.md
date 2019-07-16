@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/canada-ca/template-gabarit.svg?branch=master)](https://travis-ci.org/canada-ca/template-gabarit)
+[![Build Status](https://travis-ci.org/StephenMottyNRC/template-gabarit.svg?branch=master)](https://travis-ci.org/StephenMottyNRC/template-gabarit)
 
 ([Français](#gabarit-pour-dépôts-de-code-source-ouvert-du-gouvernement-du-canada))
 
