@@ -1,3 +1,6 @@
+---
+layout: windy
+---
 ## Open Science at NRC
 
 This web page is best viewed using the Chromium browser.  
