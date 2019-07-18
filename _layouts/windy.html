@@ -6,9 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,maximum-scale=2">
     <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  	<style>
+  		#windy {
+  			width: 100%;
+  			height: 300px;
+  		}
+  	</style>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <script src="https://api4.windy.com/assets/libBoot.js"></script>
     <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-1.2.0.min.css" type="text/css" />
     <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-1.2.0.min.css" type="text/css" />
     <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-tables-1.2.0.min.css" type="text/css" />
@@ -47,6 +55,40 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
+        <div id="windy"></div>
+
+            <script>
+
+            const options = {
+
+                        // Required: API key
+                        key: 'M9n30IjF1LeV53cWhI9z1JgVQz7o8XUw',
+
+                        // Put additional console output
+                        verbose: true,
+
+                        // Optional: Initial state of the map
+                        lat: 54.47,
+                        lon: 47.54,
+                        zoom: 5,
+                }
+
+            // Initialize Windy API
+            windyInit( options, windyAPI => {
+                // windyAPI is ready, and contain 'map', 'store',
+                // 'picker' and other usefull stuff
+
+                const { map } = windyAPI
+                // .map is instance of Leaflet map
+
+                L.popup()
+                    .setLatLng([54.47, 47.54])
+                    .setContent("Hello World")
+                    .openOn( map );
+
+            })
+
+            </script>
         {{ content }}
       </section>
     </div>
