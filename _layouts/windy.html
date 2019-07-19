@@ -96,6 +96,10 @@
         <iframe title="Environment Canada Weather" width="287px" height="191px" src="https://weather.gc.ca/wxlink/wxlink.html?cityCode=nl-39&amp;lang=e" allowtransparency="true" frameborder="0"></iframe>
         <!-- End WeatherLink Fragment -->
           </div></td><td><div id="rss">
+          <script type="text/python">
+          from email import feedparser
+          NewsFeed = feedparser.parse("https://weather.gc.ca/rss/city/nl-39_e.xml")
+          </script>
         <iframe title="Environment Canada Weather" width="287px" height="191px" src="https://weather.gc.ca/rss/city/nl-39_e.xml"  allowtransparency="true" frameborder="0"></iframe>
           </div></td></tr>
        </tbody>
