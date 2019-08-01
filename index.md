@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-## Open Science at NRC
+## Open Science on the World-wide Web
 
 This web page is best viewed using the Chromium browser.  
  
