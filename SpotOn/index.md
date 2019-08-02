@@ -7,17 +7,6 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
 
 <script>
 
-	var mymap = L.map('mapid').setView([47.54, -54..47], 13);
-
-	function onMapClick(e) {
-		popup
-			.setLatLng(e.latlng)
-			.setContent("You clicked the map at " + e.latlng.toString())
-			.openOn(mymap);
-	}
-
-	mymap.on('click', onMapClick);
-
 </script>
 
 
