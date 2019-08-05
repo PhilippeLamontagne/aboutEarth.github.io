@@ -24,7 +24,6 @@ pageNum=0
 pageSize=12
 
 def updateMap(ev):
-    global stationReadings
     global map
     sel = document["pageOfStations"]
     featuredStations = [int(option.value) for option in sel if option.selected and (int(option.value)>=0)]
@@ -32,7 +31,7 @@ def updateMap(ev):
         #geometry = feature["geometry"]
         #lonlat = [round(float(v)) for v in geometry["coordinates"]]
         #sel.style.background-color ='blue'
-        window.alert("%i"%lineno)
+        window.alert(document["csv"].value)
         #map.setView(lonlat[:2:-1]) # optional third list element is altitude
 
 async def refreshPageSize():
@@ -61,6 +60,7 @@ async def refreshPageSize():
                     "little" # v for v in feature["geometry"]["coordinates"]
                 ])
                 csvText += "\n"
+            document["csv"].value=csvText
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
             sel = html.SELECT(size=1, multiple=False)
