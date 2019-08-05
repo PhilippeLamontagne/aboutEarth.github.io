@@ -6,7 +6,7 @@ layout: leaflet
 This web page is reserved for use with the  [OpenStreetMap](https://www.openstreetmap.org/#map=3/71.34/-96.82) client "SpotOn".
 
 <script>
-var map = L.map('map').setView([51.505, -0.09], 13);
+var map = L.map('map').setView([47.54, -54.47], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
