@@ -22,12 +22,18 @@ copyleft = {
 pageNum=0
 pageSize=12
 
+stationReadings=dict()
+
 def updateMap(ev):
     sel = document["pageOfStations"]
-    stations = {option.value: option.text for option in sel if option.selected and int(option.value)>=0}
-    if len(stations)>0:
+    featuredStations = [stationReadings[int(option.value)] for option in sel if option.selected and (int(option.value) in stationReadings)]
+    for feature in featuredStations:
+        geometry = feature["geometry"]
+        lonlat = [round(float(v)) for v in geometry["coordinates"]]
         #sel.style.background-color ='blue'
-        window.alert(",".join(stations.keys()))
+        #window.alert(",".join(stations.keys()))
+        map = leaflet.map("map").
+        map.setView(lonlat, 15);
 
 async def refreshPageSize():
     global pageSize,pageNum
@@ -58,7 +64,8 @@ async def refreshPageSize():
             option = html.OPTION(item)
             option.value = "-1"
             sel <= option
-            for feature in geoJSON["features"][choice:choice+pageSize]:
+            stationReadings = {choice+o: feature for o,feature in enumerate(geoJSON["features"][choice:choice+pageSize])}
+            for feature in [stationReadings[key] for key in stationReadings]:#geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
                 lonlat = [round(float(v)) for v in geometry["coordinates"]]
