@@ -24,6 +24,8 @@ L.marker([47.54, -54.47]).addTo(map)
     .openPopup();
 </script>
 
+<script type="text/python" src="/assets/py/spotOn.bry"></script>
+
 ### Browse the source
 
 This site and the pages it links to can be viewed as source files at [github](https://github.com/StephenMottyNRC/StephenMottyNRC.github.io). 
