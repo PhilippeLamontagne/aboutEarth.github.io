@@ -23,23 +23,20 @@ copyleft = {
 pageNum=0
 pageSize=12
 
-stationReadings=dict()
-
 def updateMap(ev):
     global stationReadings
     global map
     sel = document["pageOfStations"]
-    featuredStations = [stationReadings[int(option.value)] for option in sel if option.selected and (int(option.value) in stationReadings)]
-    for feature in featuredStations:
-        geometry = feature["geometry"]
-        lonlat = [round(float(v)) for v in geometry["coordinates"]]
+    featuredStations = [int(option.value) for option in sel if option.selected and (int(option.value)>=0)]
+    for lineno in featuredStations:
+        #geometry = feature["geometry"]
+        #lonlat = [round(float(v)) for v in geometry["coordinates"]]
         #sel.style.background-color ='blue'
-        #window.alert(",".join(stations.keys()))
-        map.setView(lonlat[:2:-1]) # optional third list element is altitude
+        window.alert("%i"%lineno)
+        #map.setView(lonlat[:2:-1]) # optional third list element is altitude
 
 async def refreshPageSize():
     global pageSize,pageNum
-    global stationReadings
     geoJSON = {}
     url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
     request = await aio.get(url2CanadianWeather)#,format="application/json")
@@ -50,6 +47,16 @@ async def refreshPageSize():
     try:
         entries = len(geoJSON["features"])
         if entries>0:
+            csvText = "\n".join([
+                    ",".join([  feature["properties"]["pres"+language],
+                                feature["properties"]["temp"],
+                                feature["properties"]["speed"],
+                                feature["properties"]["bearing"],
+                                feature["geometry"]["coordinates"][0],
+                                feature["geometry"]["coordinates"][1]
+                            ])
+                    for feature in geoJSON["features"]  
+            ])
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
             sel = html.SELECT(size=1, multiple=False)
@@ -67,18 +74,13 @@ async def refreshPageSize():
             option = html.OPTION(item)
             option.value = "-1"
             sel <= option
-            stationReadings = {choice+o: feature for o,feature in enumerate(geoJSON["features"][choice:choice+pageSize])}
-            for feature in [stationReadings[key] for key in stationReadings]:#geoJSON["features"][choice:choice+pageSize]:
+            for feature in geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
                 lonlat = [round(float(v)) for v in geometry["coordinates"]]
                 language = "_en"
                 properties = feature["properties"]
                 station = properties["station"+language]
-                #kpa = float(properties["pres"+language])
-                #tempC = float(properties["temp"])
-                #wspd = float(properties["speed"])
-                #wdir = float(properties["bearing"])
                 item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) #+ "?"+"&".join([k for k in geometry])
                 option = html.OPTION(item)
                 option.value = "%i"%chosen
