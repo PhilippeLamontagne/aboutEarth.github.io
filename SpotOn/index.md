@@ -10,7 +10,7 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
     <div name="stations" id="stations"></div><br />
     <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" value="Previous" />
     <input id = "nextpage" name="nextpage" type="button" value="Next" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
-    <input type="hidden" id="csv" name="csv" "disabled="1" readonly="1" style="display:'none';" value="" /></form>
+    <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" /></form>
 
 <script>
 var map = L.map('map').setView([47.54, -54.47], 13);
