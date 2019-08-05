@@ -48,17 +48,6 @@ async def refreshPageSize():
         entries = len(geoJSON["features"])
         if entries>0:
             language = "_en"
-            csvText = "\n".join([
-                    ",".join([
-                                "This", #feature["properties"]["pres"+language],
-                                "Is", #feature["properties"]["temp"],
-                                "working", # feature["properties"]["speed"],
-                                "a" #feature["properties"]["bearing"]
-                            ] + [ 
-                                "little" # v for v in feature["geometry"]["coordinates"]
-                            ])
-                    for feature in geoJSON["features"]  
-            ]);
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
             sel = html.SELECT(size=1, multiple=False)
