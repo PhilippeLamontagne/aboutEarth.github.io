@@ -25,6 +25,7 @@ pageSize=12
 stationReadings=dict()
 
 def updateMap(ev):
+    global stationReadings
     sel = document["pageOfStations"]
     featuredStations = [stationReadings[int(option.value)] for option in sel if option.selected and (int(option.value) in stationReadings)]
     for feature in featuredStations:
@@ -37,6 +38,7 @@ def updateMap(ev):
 
 async def refreshPageSize():
     global pageSize,pageNum
+    global stationReadings
     geoJSON = {}
     url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
     request = await aio.get(url2CanadianWeather)#,format="application/json")
