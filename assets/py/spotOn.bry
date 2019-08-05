@@ -50,12 +50,12 @@ async def refreshPageSize():
             language = "_en"
             csvText = "\n".join([
                     ",".join([
-                                "This:,#feature["properties"]["pres"+language],
+                                "This", #feature["properties"]["pres"+language],
                                 "Is", #feature["properties"]["temp"],
-                                "not", # feature["properties"]["speed"],
-                                "working" #feature["properties"]["bearing"]
+                                "working", # feature["properties"]["speed"],
+                                "a" #feature["properties"]["bearing"]
                             ] + [ 
-                                "at all" # v for v in feature["geometry"]["coordinates"]
+                                "little" # v for v in feature["geometry"]["coordinates"]
                             ])
                     for feature in geoJSON["features"]  
             ]);
