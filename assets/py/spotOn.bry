@@ -32,8 +32,8 @@ def updateMap(ev):
         lonlat = [round(float(v)) for v in geometry["coordinates"]]
         #sel.style.background-color ='blue'
         #window.alert(",".join(stations.keys()))
-        map = leaflet.map("map").
-        map.setView(lonlat, 15);
+        map = leaflet.map("map")
+        map.setView(lonlat, 15)
 
 async def refreshPageSize():
     global pageSize,pageNum
