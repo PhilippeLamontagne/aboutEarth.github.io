@@ -47,8 +47,8 @@ async def refreshPageSize():
         entries = len(geoJSON["features"])
         if entries>0:
             language = "_en"
+            csvText = ""
             for feature in geoJSON["features"]:
-                csvText = ""
                 if "properties" in feature:
                     properties = feature["properties"]
                     try:
