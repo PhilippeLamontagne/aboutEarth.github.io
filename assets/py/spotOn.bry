@@ -10,6 +10,7 @@ from browser.timer import request_animation_frame as raf
 from browser.timer import cancel_animation_frame as caf
 
 leaflet = window.L
+map = windows.map
 
 copyleft = {
     "maxZoom": 18,
@@ -26,6 +27,7 @@ stationReadings=dict()
 
 def updateMap(ev):
     global stationReadings
+    global map
     sel = document["pageOfStations"]
     featuredStations = [stationReadings[int(option.value)] for option in sel if option.selected and (int(option.value) in stationReadings)]
     for feature in featuredStations:
@@ -33,7 +35,6 @@ def updateMap(ev):
         lonlat = [round(float(v)) for v in geometry["coordinates"]]
         #sel.style.background-color ='blue'
         #window.alert(",".join(stations.keys()))
-        map = leaflet.map("map")
         map.setView(lonlat, 15)
 
 async def refreshPageSize():
