@@ -53,10 +53,10 @@ async def refreshPageSize():
                     properties = feature["properties"]
                     try:
                         csvText += ",".join([
-                            properties["pres"+language],
-                            properties["temp"],
-                            properties["speed"],
-                            properties["bearing"]
+                            "pres"+language,
+                            "temp",
+                            "speed",
+                            "bearing"
                         ])
                     except:
                         csvText += ",".join(properties.keys())
