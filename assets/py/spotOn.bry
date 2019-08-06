@@ -46,17 +46,17 @@ async def refreshPageSize():
     try:
         entries = len(geoJSON["features"])
         if entries>0:
-            language = "_fr"
+            language = "_en"
             csvText = ""
             for feature in geoJSON["features"]:
                 if "properties" in feature:
                     properties = feature["properties"]
                     try:
                         csvText += ",".join([
-                            properties["pres"+language],
-                            properties["temp"],
-                            properties["speed"],
-                            properties["bearing"]
+                            properties.get("pres"+language,"NaN"),
+                            properties.get("temp","NaN"),
+                            properties.get("speed","NaN"),
+                            properties.get("bearing","NaN")
                         ])
                     except:
                         csvText += ",".join(properties.keys())
@@ -65,9 +65,7 @@ async def refreshPageSize():
                     try:
                         coordinates = geometry["coordinates"]
                         csvText += ","
-                        csvText += ",".join([ 
-                            "lat","lon" # coordinates.keys()
-                        ])
+                        csvText += ",".join(["%f"%f for f in coordinates])
                     except:
                         csvText += ",".join(geometry.keys())
                 csvText += "\n"
