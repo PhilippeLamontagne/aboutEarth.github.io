@@ -46,7 +46,6 @@ async def refreshPageSize():
     url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
     request = await aio.get(url2CanadianWeather)#,format="application/json")
     geoJSON = json.loads(request.data)
-    # document["debugme"].innerHTML = ",".join([k for k in geoJSON]+["%i"%len(geoJSON["features"])])
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
     try:
@@ -108,13 +107,23 @@ def updatePageSize(ev):
 
 def nextPage(ev):
     global pageSize,pageNum
-    pageNum +=1
+    myPageNum = pageNum
+    if pageSize>0 and "pageOfStations" in document:
+        sel = document["pageOfStations"]
+        myPageNum = int(min([int(option.value) for option in sel if (int(option.value)>=0)])/pageSize)
+
+    pageNum = myPageNum + 1
     aio.run(refreshPageSize())
 
 def formerPage(ev):
     global pageSize,pageNum
-    if pageNum:
-        pageNum -= 1
+    myPageNum = pageNum
+    if pageSize>0 and "pageOfStations" in document:
+        sel = document["pageOfStations"]
+        myPageNum = int(min([int(option.value) for option in sel if (int(option.value)>=0)])/pageSize)
+    
+    if myPageNum>0:
+        pageNum = myPageNum - 1
         aio.run(refreshPageSize())
 
 def firstPage(ev):
