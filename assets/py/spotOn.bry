@@ -26,13 +26,15 @@ pageSize=12
 def updateMap(ev):
     global map
     sel = document["pageOfStations"]
-    featuredStations = [int(option.value) for option in sel if option.selected and (int(option.value)>=0)]
-    for lineno in featuredStations:
-        #geometry = feature["geometry"]
-        #lonlat = [round(float(v)) for v in geometry["coordinates"]]
+    csvText = document["csv"].value
+    featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
+    lines = [line for line in csvText.split() if any([line.startswith(t+",") for t in featuredStations])]
+    for id in featuredStations:
+        fields= [ line.split(",") for line in lines if line.startswith(id+",")] 
+        latlon = [float(fields[-1][-2]),float(fields[-1][-1])]
         #sel.style.background-color ='blue'
-        window.alert(document["csv"].value)
-        #map.setView(lonlat[:2:-1]) # optional third list element is altitude
+        window.alert("\n".join(",".join(fields)))
+        #map.setView(lonlat) # optional third list element is altitude
 
 async def refreshPageSize():
     global pageSize,pageNum
@@ -46,30 +48,6 @@ async def refreshPageSize():
     try:
         entries = len(geoJSON["features"])
         if entries>0:
-            language = "_en"
-            csvText = ""
-            for feature in geoJSON["features"]:
-                if "properties" in feature:
-                    properties = feature["properties"]
-                    try:
-                        csvText += ",".join([
-                            properties.get("pres"+language,"NaN"),
-                            properties.get("temp","NaN"),
-                            properties.get("speed","NaN"),
-                            properties.get("bearing","NaN")
-                        ])
-                    except:
-                        csvText += ",".join(properties.keys())
-                if "geometry" in feature:
-                    geometry = feature["geometry"]
-                    try:
-                        coordinates = geometry["coordinates"]
-                        csvText += ","
-                        csvText += ",".join(["%f"%f for f in coordinates])
-                    except:
-                        csvText += ",".join(geometry.keys())
-                csvText += "\n"
-            document["csv"].value=csvText
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
             sel = html.SELECT(size=1, multiple=False)
@@ -83,10 +61,12 @@ async def refreshPageSize():
 
             chosen = choice = pageSize*holdPageNum
 
+            language = "_en"
             item = ("Select a station:")
             option = html.OPTION(item)
             option.value = "-1"
             sel <= option
+            csvText = ""
             for feature in geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
@@ -97,7 +77,18 @@ async def refreshPageSize():
                 option = html.OPTION(item)
                 option.value = "%i"%chosen
                 sel <= option
+                csvText += ",".join([
+                    "%i"%chosen,
+                    properties.get("pres"+language,"NaN"),
+                    properties.get("temp","NaN"),
+                    properties.get("speed","NaN"),
+                    properties.get("bearing","NaN"),
+                    "%f"%lonlat[1],
+                    "%f"%lonlat[0],
+                ])
+                csvText += "\n"
                 chosen += 1
+            document["csv"].value=csvText
             if "pageOfStations" in document:
                 document["pageOfStations"].remove()
             sel.id=sel.name="pageOfStations"
