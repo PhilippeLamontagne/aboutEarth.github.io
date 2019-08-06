@@ -8,8 +8,8 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
 <form name="analyze" id="analyze" action="analyze.html" method="GET">
     <select name="pagesize" id="pagesize"><option value="12">12</option><option value="24">24</option><option value="48">48</option></select>
     <div name="stations" id="stations"></div><br />
-    <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" value="Previous" />
-    <input id = "nextpage" name="nextpage" type="button" value="Next" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
+    <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" disabled="1" value="Previous" />
+    <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
     <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" /></form>
 
 <script>
