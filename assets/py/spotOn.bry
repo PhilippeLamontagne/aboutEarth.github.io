@@ -34,7 +34,7 @@ def updateMap(ev):
         if len(fields)>0:
             latlon = [ float(fields[-1][-2]), float(fields[-1][-1]) ]
             #sel.style.background-color ='blue'
-            window.alert("\n".join(",".join(fields)))
+            window.alert(",".join(fields[-1]))
             #map.setView(lonlat) # optional third list element is altitude
         else:
             window.alert("\n".join(lines))
