@@ -52,20 +52,21 @@ async def refreshPageSize():
                 if "properties" in feature:
                     properties = feature["properties"]
                     try:
-                        csvText += ",".join(properties.keys())
-                    except:
                         csvText += ",".join([
-                            "pres"+language,
-                            "temp",
-                            "speed",
-                            "bearing"
+                            # "pres"+language,
+                            properties["temp"],
+                            properties["speed"],
+                            properties["bearing"]
                         ])
+                    except:
+                        csvText += ",".join(properties.keys())
                 if "geometry" in feature:
                     geometry = feature["geometry"]
                     try:
                         csvText += ","
                         csvText += ",".join([ 
-                            feature["geometry"].keys()#["coordinates"]
+                            geometry["coordinates"]["0"],
+                            geometry["coordinates"]["1"]
                         ])
                     except:
                         csvText += ",".join(geometry.keys())
