@@ -31,10 +31,13 @@ def updateMap(ev):
     lines = [line for line in csvText.split() if any([line.startswith(t+",") for t in featuredStations])]
     for id in featuredStations:
         fields= [ line.split(",") for line in lines if line.startswith(id+",")] 
-        latlon = [float(fields[-1][-2]),float(fields[-1][-1])]
-        #sel.style.background-color ='blue'
-        window.alert("\n".join(",".join(fields)))
-        #map.setView(lonlat) # optional third list element is altitude
+        if len(fields>0):
+            latlon = [float(fields[-1][-2]),float(fields[-1][-1])]
+            #sel.style.background-color ='blue'
+            window.alert("\n".join(",".join(fields)))
+            #map.setView(lonlat) # optional third list element is altitude
+       else:
+            window.alert("\n".join(lines))
 
 async def refreshPageSize():
     global pageSize,pageNum
