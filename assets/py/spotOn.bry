@@ -53,7 +53,7 @@ async def refreshPageSize():
                     properties = feature["properties"]
                     try:
                         csvText += ",".join([
-                            # "pres"+language,
+                            properties["pres"+language],
                             properties["temp"],
                             properties["speed"],
                             properties["bearing"]
@@ -62,14 +62,14 @@ async def refreshPageSize():
                         csvText += ",".join(properties.keys())
                 if "geometry" in feature:
                     geometry = feature["geometry"]
+                    coordinates = geometry["coordinates"]
                     try:
                         csvText += ","
                         csvText += ",".join([ 
-                            geometry["coordinates"]["0"],
-                            geometry["coordinates"]["1"]
+                            v for v in coordinates
                         ])
                     except:
-                        csvText += ",".join(geometry.keys())
+                        csvText += ",".join(coordinates.keys())
                 csvText += "\n"
             document["csv"].value=csvText
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
