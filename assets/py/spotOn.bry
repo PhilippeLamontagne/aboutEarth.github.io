@@ -76,7 +76,7 @@ async def refreshPageSize():
             for feature in geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
-                lonlat = [round(float(v)) for v in geometry["coordinates"]]
+                lonlat = [float(v) for v in geometry["coordinates"]]
                 properties = feature["properties"]
                 station = properties["station"+language]
                 item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) #+ "?"+"&".join([k for k in geometry])
