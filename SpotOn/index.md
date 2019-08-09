@@ -26,6 +26,15 @@ L.marker([47.54, -54.47]).addTo(map)
     .bindPopup('Start here')
     .openPopup();
 
+var popup = L.popup();
+function onMapClick(e) {
+  popup
+    .setLatLng(e.latlng)
+    .setContent("You clicked the map at " + e.latlng.toString())
+    .openOn(map);
+}
+map.on('click', onMapClick);
+
 async function updateGeoJSON(geoJSON) {
     L.Proj.geoJson(JSON.parse(geoJSON)).addTo(map);
 }
