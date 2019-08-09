@@ -36,7 +36,7 @@ def updateMap(ev):
             fields=reports[-1]
             latlonalt = [ float(fields[-2]), float(fields[-1]) ]
             #window.alert(",".join(fields))
-            map.setView(map.unproject(latlonalt)) # optional third list element is altitude
+            map.setView(latlonalt) # optional third list element is altitude
         else:
             window.alert("Incomplete data from station")
 
