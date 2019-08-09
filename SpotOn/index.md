@@ -14,7 +14,7 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
 
 <script>
 #proj4.defs("urn:ogc:def:crs:EPSG::26915", "+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs");
-proj4.defs["OGC:CRS84"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+proj4.defs("urn:ogc:def:crs:OGC:1.3:CRS84", "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
     
 var map = L.map('map').setView([47.54, -54.47], 13);
 
