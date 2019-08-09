@@ -25,8 +25,8 @@ L.marker([47.54, -54.47]).addTo(map)
     .bindPopup('Start here')
     .openPopup();
 
-function updateGeoJSON(geoJSON) {
-    L.Proj.geoJson(geoJSON).addTo(map);
+async function updateGeoJSON(geoJSON) {
+    L.Proj.geoJson(JSON.parse(geoJSON)).addTo(map);
 }
 
 </script>
