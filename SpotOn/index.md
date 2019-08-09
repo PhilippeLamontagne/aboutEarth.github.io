@@ -13,28 +13,12 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
     <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" /></form>
 
 <script>
-proj4.defs("urn:ogc:def:crs:EPSG::26915", "+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs");
-
-var geojson = {
-  type: "Feature",
-  geometry: {
-    type: "Point",
-    coordinates: [481650, 4980105]
-  },
-  crs: {
-    type: "name",
-    properties: {
-      name: "urn:ogc:def:crs:EPSG::26915"
-    }
-  }
-};
+//proj4.defs("urn:ogc:def:crs:EPSG::26915", "+proj=utm +zone=15 +ellps=GRS80 +datum=NAD83 +units=m +no_defs");
 
 var map = L.map('map').setView([47.54, -54.47], 13);
 
-L.Proj.geoJson(geojson).addTo(map);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: 'Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 L.marker([47.54, -54.47]).addTo(map)
