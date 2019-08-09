@@ -24,6 +24,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 L.marker([47.54, -54.47]).addTo(map)
     .bindPopup('Start here')
     .openPopup();
+
+function updateGeoJSON(geoJSON) {
+    L.Proj.geoJson(geoJSON).addTo(map);
+}
+
 </script>
 
 <script type="text/python" src="/assets/py/spotOn.bry"></script>
