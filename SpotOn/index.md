@@ -22,9 +22,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-L.marker([47.54, -54.47]).addTo(map)
-    .bindPopup('Start here')
-    .openPopup();
+//L.marker([47.54, -54.47]).addTo(map).bindPopup('Start here').openPopup();
 
 var popup = L.popup();
 function onMapClick(e) {
@@ -35,8 +33,12 @@ function onMapClick(e) {
 }
 map.on('click', onMapClick);
 
+var layer = L.geoJSON();
+layer.addTo(map);
 async function updateGeoJSON(geoJSON) {
-    L.Proj.geoJson(JSON.parse(geoJSON)).addTo(map);
+    layer.remove();
+    layer = L.Proj.geoJson(JSON.parse(geoJSON));
+    layer.addTo(map);
 }
 
 </script>
