@@ -42,12 +42,11 @@ def updateMap(ev):
 
 async def refreshPageSize():
     global pageSize,pageNum
-    global leaflet,map
     geoJSON = {}
     url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
     request = await aio.get(url2CanadianWeather)#,format="application/json")
+    window.updateGeoJSON(request.data)   
     geoJSON = json.loads(request.data)
-    leaflet.Proj.geoJson(geoJSON).addTo(map);
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
     try:
