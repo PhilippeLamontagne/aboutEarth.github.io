@@ -5,7 +5,10 @@ layout: default
 
 This web page is best viewed using the Chromium browser.  
 
-### [Environmental data](https://StephenMottyNRC.github.io/aboutEarth)
+
+### Projects
+
+* [Environmental data](https://StephenMottyNRC.github.io/aboutEarth)
 
 ## Browse the source
 
