@@ -22,22 +22,16 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.7.1/brython_stdlib.js"></script>
     <style>
       .app {
-        width: 80%;
-        height: 200px;
-        background: aqua;
+        width: 90%;
         margin: auto;
         padding: 10px;
       }
       .one {
-          width: 15%;
-          height: 200px;
-          background: red;
           float: left;
       }
       .two {
-          margin-left: 15%;
-          height: 200px;
-          background: black;
+          margin-left: 700px;
+          background: red;
       }
     </style>
     
@@ -75,11 +69,12 @@
     <div id="main_content_wrap" class="outer">
       <div id="map" style="height: 300px"></div>
       <section class="app">
-          <div class="one">Left</div>
-          <div class="two">Right</div>
-      </section>
-      <section id="main_content" class="inner">
+        <div class="one">
+        <section id="main_content" class="inner">
         {{ content }}
+        </section>
+        </div>
+        <div class="two">Right</div>
       </section>
     </div>
 
