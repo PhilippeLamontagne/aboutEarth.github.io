@@ -20,10 +20,6 @@
     <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-api-1.3.0.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.7.1/brython.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.7.1/brython_stdlib.js"></script>
-<style>
-    #main_content {max-width: 90%; float: left;}
-    .inner section {max-width: 640px; float: left;}
-</style>
     
 {% seo %}
   </head>
@@ -58,13 +54,8 @@
     <script src="https://unpkg.com/proj4leaflet"></script>
     <div id="main_content_wrap" class="outer">
       <div id="map" style="height: 300px"></div>
-      <section class="inner">
-        <section id="main_content" >
+      <section class="inner" id="main_content" style="max-width:100%">
         {{ content }}
-        <section>
-        <section id="visuals">
-          Right
-        </section>
       </section>
     </div>
 
