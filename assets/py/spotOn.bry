@@ -9,6 +9,64 @@ from browser import timer, aio
 from browser.timer import request_animation_frame as raf
 from browser.timer import cancel_animation_frame as caf
 
+# paramters of graph
+theta0 = 0.0
+falseTheta = 0 
+nx = 10
+
+def UpdateTheta0(delta):
+    global theta0,falseTheta
+    #    
+    delta = delta % 360.0 #make sure delta is positive and modulo 360
+    if falseTheta == 0:
+        theta0 += delta
+    else:
+        theta0 -= delta
+    #fi
+    if theta0>360.0:
+        theta0 = 360.0 - (theta0%360.0)
+        falseTheta = 360
+    if theta0<0.0:
+        theta0 = - (theta0%-360.0)
+        falseTheta = 0
+    #fi
+    return ((360.0 - theta0) if falseTheta else theta0)
+    
+# 'importing' the library
+Bokeh = window.Bokeh
+plt = Bokeh.Plotting
+source = Bokeh.ColumnDataSource.new({
+    'data': {'x': [x * 360.0/nx for x in range(nx+1)], 'y': [0.0]*(nx+1) }
+})
+# create some ranges for the plot
+xdr = Bokeh.Range1d.new({ "start": -0.01, "end": 360.01 });
+ydr = Bokeh.Range1d.new({ "start": -10.01, "end": 10.01 });
+
+# make the plot and add some tools
+tools = "pan,zoom_in,zoom_out,reset"
+fig1 = plt.figure({'title': "Sine wave (1 RPM)", 'tools': tools})
+fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source,
+    "line_color": "#666699",
+    "line_width": 2
+})
+fig1.x_range=xdr
+fig1.y_range=ydr
+
+# show the plot
+mydiv = document['graphs']
+plt.show(fig1, mydiv.elt)
+
+def UpdateFig1(theta0):
+    global nx
+    # generate the source data
+    delta = (360.0/nx)%360.0    
+    lx = [x * delta for x in range(nx+1)]
+    ly = [ 10.0 * math.sin(math.radians(theta0+dTheta)) for dTheta in lx]
+    #update the source data
+    #source.data.x = lx
+    source.data.y = ly
+    source.change.emit()
+
 leaflet = window.L
 map = window.map
 
