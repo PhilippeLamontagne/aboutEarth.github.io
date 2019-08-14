@@ -208,9 +208,9 @@ fig1.add_layout(yra, 'right')
 #    'data': {'x': [x * 360.0/nx for x in range(nx+1)], 'y': [0.0]*(nx+1) }
 #})
 colours = ["#666699","yellow"] 
-sources = {option.value: Bokeh.ColumnDataSource.new({
+sources = [ Bokeh.ColumnDataSource.new({
     'data': {'x': list(range(nx+1)), 'y': [0.0]*(nx+1) }
-}) for _ in colours }
+}) for _ in colours ]
 
 lines = [fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source,
     "line_width": 2,
