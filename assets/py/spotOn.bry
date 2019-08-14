@@ -192,6 +192,7 @@ source = Bokeh.ColumnDataSource.new({
 # create some ranges for the plot
 xdr = Bokeh.Range1d.new({ "start": 0, "end": nx });
 ydr = Bokeh.Range1d.new({ "start": -10.01, "end": 10.01 });
+rdr = Bokeh.Range1d.new({ "start": -360.0, "end": 360.0 });
 
 # make the plot and add some tools
 tools = "pan,zoom_in,zoom_out,reset"
@@ -202,6 +203,11 @@ fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source,
 })
 fig1.x_range=xdr
 fig1.y_range=ydr
+fig1.extra_y_ranges["times10"]=rdr
+yra = Bokeh.LinearAxis.new({"y_range_name":"times10"})
+yra.axis_line_color="yellow"
+yra.visible = False
+fig1.add_layout(yra, 'right')
 
 def updateDataRanges(ev):
     sel = document["field"]
@@ -210,15 +216,19 @@ def updateDataRanges(ev):
         if fieldIds[-1]=="T":  
             ydr["start"]=-50.0
             ydr["end"]=50.0
+            yra.visible = False
         elif fieldIds[-1]=="P":  
             ydr["start"]=85.0
             ydr["end"]=110.0
+            yra.visible = False
         elif fieldIds[-1]=="W":  
             ydr["start"]=0.0
             ydr["end"]=200.0
+            yra.visible = True
         else:
             ydr["start"]=-0.0
             ydr["end"]=0.0
+            yra.visible = False
         #fig1.y_range=ydr
 
 document["field"].bind("change", updateDataRanges)
