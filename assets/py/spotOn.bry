@@ -218,6 +218,7 @@ lines = [fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source
     "line_dash" : []
 }) for source,colour in zip(sources,colours)]
 lines[-1].y_range_name=("direction") 
+lines[-1].visible = False
 
 def updateDataRanges(ev):
     sel = document["field"]
@@ -227,18 +228,22 @@ def updateDataRanges(ev):
             ydr["start"]=-50.0
             ydr["end"]=50.0
             yra.visible = False
+            lines[-1].visible = False
         elif fieldIds[-1]=="P":  
             ydr["start"]=85.0
             ydr["end"]=110.0
             yra.visible = False
+            lines[-1].visible = False
         elif fieldIds[-1]=="W":  
             ydr["start"]=0.0
             ydr["end"]=200.0
             yra.visible = True
+            lines[-1].visible = True
         else:
             ydr["start"]=-0.0
             ydr["end"]=0.0
             yra.visible = False
+            lines[-1].visible = False
         #fig1.y_range=ydr
 
 document["field"].bind("change", updateDataRanges)
@@ -262,7 +267,7 @@ def UpdateFig1(theta0):
     #update the source data
     sources[-1].data.x = sources[0].data.x = list(range(nx+1)) 
     sources[0].data.y = dy
-    sources[-1].data.y = dt
+    sources[-1].data.y = [ theta0+dTheta for dTheta in dt ]
     sources[0].change.emit()
     sources[-1].change.emit()
     
