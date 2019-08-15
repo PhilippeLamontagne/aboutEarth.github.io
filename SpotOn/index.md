@@ -21,7 +21,7 @@ This site is currently under construction and is provided AS IS to serve as a re
     <tr><td >Pressure: </td><td colspan="2"><input style="max-width:6em" id="P" name="P" disabled="1" readonly="1" value="" /> kPa</td></tr>
     <tr><td>Wind speed: </td><td><input style="max-width:6em" id="Ws" name="Ws" disabled="1" readonly="1" value="" /> kts
     </td><td>bearing: <input style="max-width:6em" id="Wb" name="Wb" disabled="1" readonly="1" value="" /> &deg;</td></tr>
-    <tr><td colspan="2">Data Source: Environment and Climate Change Canada</td></tr>
+    <tr><td colspan="3">Data Source: Environment and Climate Change Canada</td></tr>
     </tbody></table>
     <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
 </form>
