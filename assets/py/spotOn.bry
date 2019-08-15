@@ -35,6 +35,10 @@ def updateMap(ev):
         if len(reports)>0:
             fields=reports[-1]
             latlonalt = [ float(fields[-2]), float(fields[-1]) ]
+            document["P"].value=fields[1]
+            document["T"].value=fields[2]
+            document["Ws"].value=fields[3]
+            document["Wb"].value=fields[4]
             map.setView(latlonalt) # optional third list element is altitude
             #latlng = leaflet.latLng(latlonalt[0], latlonalt[1]);
             #sphericalMercator = leaflet.Projection.SphericalMercator.project(latlng);
