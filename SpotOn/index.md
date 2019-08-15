@@ -14,7 +14,15 @@ This site is currently under construction and is provided AS IS to serve as a re
         <div name="stations" id="stations"></div><br />
         <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" disabled="1" value="Previous" />
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
-    <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" /></form>
+    <p />
+    <table border="0"><tbody>
+    <tr><td>Temperature: </td><td colspan="2"><input style="max-width:6em" id="T" name="T" disabled="1" readonly="1" value="" /> &deg;C</td></tr>
+    <tr><td >Pressure: </td><td colspan="2"><input style="max-width:6em" id="P" name="P" disabled="1" readonly="1" value="" /> kPa</td></tr>
+    <tr><td>Wind speed: </td><td><input style="max-width:6em" id="Ws" name="Ws" disabled="1" readonly="1" value="" /> kts
+    </td><td>bearing: <input style="max-width:6em" id="Wb" name="Wb" disabled="1" readonly="1" value="" /> &deg;</td></tr>
+    </tbody></table>
+    <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
+</form>
 </td><td>
     <form name="visualize" id="visualize" action="visualize.html" method="GET">
     <select name="field" id="field"><option value="T" selected="1">Temperature</option><option value="P">Pressure</option><option value="W">Wind</option></select>
