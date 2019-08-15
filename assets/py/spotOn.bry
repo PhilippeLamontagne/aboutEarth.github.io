@@ -35,10 +35,11 @@ def updateMap(ev):
         if len(reports)>0:
             fields=reports[-1]
             latlonalt = [ float(fields[-2]), float(fields[-1]) ]
-            document["P"].value=fields[1]
-            document["T"].value=fields[2]
-            document["Ws"].value=fields[3]
-            document["Wb"].value=fields[4]
+            document["X"].value=fields[1]
+            document["P"].value=fields[2]
+            document["T"].value=fields[3]
+            document["Ws"].value=fields[4]
+            document["Wb"].value=fields[5]
             map.setView(latlonalt) # optional third list element is altitude
             #latlng = leaflet.latLng(latlonalt[0], latlonalt[1]);
             #sphericalMercator = leaflet.Projection.SphericalMercator.project(latlng);
@@ -89,6 +90,7 @@ async def refreshPageSize():
                 sel <= option
                 csvText += ",".join([
                     "%i"%chosen,
+                    properties.get("timestamp",time.ctime()),
                     properties.get("pres"+language,"NaN"),
                     properties.get("temp","NaN"),
                     properties.get("speed","NaN"),
