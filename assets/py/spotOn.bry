@@ -40,7 +40,37 @@ pageSize=12
 def resetGraph():
     global nx
     nx = 1 #timed functions will detect nx=1 and reset data accordingly
-    
+
+async def refreshFields(id,name,timestamp):
+    sel = document["pageOfStations"]
+    csvText = document["csv"].value
+    featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
+    lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
+    for id in featuredStations:
+        geoJSON = {}
+        url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
+        #url2CanadianWeather = "https://geo.weather.gc.ca/geomet/features/collections/climate-daily/items?f=json&limit=1&startindex=0&STN_ID='%s'&LOCAL_DATE='%s'"%(id,timestamp)
+
+        request = await aio.get(url2CanadianWeather)#,format="application/json")
+        geoJSON = json.loads(request.data)
+        for feature in geoJSON["features"]:
+            language="_en"
+            properties = feature["properties"]
+            station = properties["station"+language]
+            if(name in station):
+                fields = [ 
+                    properties.get("pres"+language,""),
+                    properties.get("temp",""),
+                    properties.get("speed",""),
+                    properties.get("bearing","")
+                ];
+                document["I"].value=id
+                document["X"].value=timestamp
+                document["P"].value=fields[0]
+                document["T"].value=fields[1]
+                document["Ws"].value=fields[2]
+                document["Wb"].value=fields[3]               
+            
 def updateMap(ev):
     global map
     
@@ -53,21 +83,17 @@ def updateMap(ev):
         fields = [ report for report in reports if all([len(f)>0 for f in report])]
         if len(fields)>0:
             fields=fields[-1]
-            #latlonalt = [ float(fields[-2]), float(fields[-1]) ]
-            #document["I"].value=fields[1]
-            #document["X"].value=fields[2]
-            #document["P"].value=fields[3]
-            #document["T"].value=fields[4]
-            #document["Ws"].value=fields[5]
-            #document["Wb"].value=fields[6]
-            #map.setView(latlonalt) # optional third list element is altitude
-            window.alert("\n".join([",".join(report) for report in reports]))
-            
+            latlonalt = [ float(fields[-2]), float(fields[-1]) ]
+            map.setView(latlonalt) # optional third list element is altitude
+            #window.alert("\n".join([",".join(report) for report in reports]))
             # reset the data for the graphs
             resetGraph()
-
+            
+            #schedule the request to get the daily data 
+            aio.run(refreshFields(fields[1],fields[2],fields[3]))
+           
         else:
-            window.alert("Incomplete data from station\n%s"%"".join(lines))
+            window.alert("Incomplete data from station")
 
 async def refreshPageSize():
     global pageSize,pageNum
@@ -115,11 +141,8 @@ async def refreshPageSize():
                 csvText += ",".join([
                     "%i"%chosen,
                     "%i"%properties.get("STN_ID", 0),
+                    station,
                     properties.get("DLY_LAST_DATE",""),#geoJSON["timeStamp"], #
-                    properties.get("pres"+language,""),
-                    properties.get("temp",""),
-                    properties.get("speed",""),
-                    properties.get("bearing",""),
                     "%f"%lonlat[1],
                     "%f"%lonlat[0]
                 ])
