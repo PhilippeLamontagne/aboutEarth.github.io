@@ -50,9 +50,9 @@ def updateMap(ev):
     lines = [line for line in csvText.split() if any([line.startswith(t+",") for t in featuredStations])]
     for id in featuredStations:
         reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
-        reports= [ report for report in reports if all([(len(f)>0 and not (f=="NaN")) for f in report])] 
-        if len(reports)>0:
-            fields=reports[-1]
+        fields = [ report for report in reports if all([(len(f)>0 and not (f=="NaN")) for f in report])][-1:]
+        if len(fields)>0:
+            fields=fields[-1]
             latlonalt = [ float(fields[-2]), float(fields[-1]) ]
             document["I"].value=fields[1]
             document["X"].value=fields[2]
@@ -69,7 +69,7 @@ def updateMap(ev):
             resetGraph()
 
         else:
-            window.alert("Incomplete data from station")
+            window.alert("Incomplete data from station\n%s"%reports[-1])
 
 async def refreshPageSize():
     global pageSize,pageNum
@@ -84,9 +84,7 @@ async def refreshPageSize():
     document["formerpage"].disabled=True
     try:
         entries = len(geoJSON["features"])
-    except:
-        entries = 0;
-    if entries>0:
+        if entries>0:
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
             sel = html.SELECT(size=1, multiple=False)
@@ -135,8 +133,8 @@ async def refreshPageSize():
             sel.id=sel.name="pageOfStations"
             sel.bind("change", updateMap)
             document["stations"] <= sel
-#    except:
-#        pass
+    except:
+        pass
 
 def updatePageSize(ev):
     global pageSize,pageNum
