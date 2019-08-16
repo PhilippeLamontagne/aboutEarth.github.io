@@ -51,19 +51,17 @@ def updateMap(ev):
     for id in featuredStations:
         reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
         fields = [ report for report in reports if all([(len(f)>0 and not (f=="NaN")) for f in report])][-1:]
-        if len(fields)>0:
+        if len(reports)>0:
             fields=fields[-1]
-            latlonalt = [ float(fields[-2]), float(fields[-1]) ]
-            document["I"].value=fields[1]
-            document["X"].value=fields[2]
-            document["P"].value=fields[3]
-            document["T"].value=fields[4]
-            document["Ws"].value=fields[5]
-            document["Wb"].value=fields[6]
-            map.setView(latlonalt) # optional third list element is altitude
-            #latlng = leaflet.latLng(latlonalt[0], latlonalt[1]);
-            #sphericalMercator = leaflet.Projection.SphericalMercator.project(latlng);
-            #map.setView(sphericalMercator) # optional third list element is altitude
+            #latlonalt = [ float(fields[-2]), float(fields[-1]) ]
+            #document["I"].value=fields[1]
+            #document["X"].value=fields[2]
+            #document["P"].value=fields[3]
+            #document["T"].value=fields[4]
+            #document["Ws"].value=fields[5]
+            #document["Wb"].value=fields[6]
+            #map.setView(latlonalt) # optional third list element is altitude
+            window.alert(",".join(reports))
             
             # reset the data for the graphs
             resetGraph()
@@ -110,7 +108,7 @@ async def refreshPageSize():
                 lonlat = [float(v) for v in geometry["coordinates"]]
                 properties = feature["properties"]
                 station = properties["STATION_NAME"]
-                item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) #+ "?"+"&".join([k for k in geometry])
+                item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) 
                 option = html.OPTION(item)
                 option.value = "%i"%chosen
                 sel <= option
@@ -127,7 +125,7 @@ async def refreshPageSize():
                 ])
                 csvText += "\n"
                 chosen += 1
-            document["csv"].value=csvText.encode()
+            document["csv"].value=csvText
             if "pageOfStations" in document:
                 document["pageOfStations"].remove()
             sel.id=sel.name="pageOfStations"
