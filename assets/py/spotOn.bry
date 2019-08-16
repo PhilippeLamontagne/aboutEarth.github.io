@@ -73,7 +73,9 @@ def updateMap(ev):
 async def refreshPageSize():
     global pageSize,pageNum
     geoJSON = {}
-    url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
+    #url2CanadianWeather = "https://geo.weather.gc.ca/geomet?service=WFS&version=2.0.0&request=GetFeature&typename=CURRENT_CONDITIONS&OUTPUTFORMAT=GeoJSON"
+    url2CanadianWeather = "https://geo.weather.gc.ca/geomet/features/collections/climate-stations/items?f=json&limit=10000&sortby=LONGITUDE%3AD%2CLATITUDE%3AA&startindex=0&COUNTRY=CAN&HAS_MONTHLY_SUMMARY=Y"
+
     request = await aio.get(url2CanadianWeather)#,format="application/json")
     geoJSON = json.loads(request.data)
     window.updateGeoJSON(json.dumps(geoJSON))   
@@ -106,14 +108,15 @@ async def refreshPageSize():
                 geometry = feature["geometry"]
                 lonlat = [float(v) for v in geometry["coordinates"]]
                 properties = feature["properties"]
-                station = properties["station"+language]
+                station = properties["STATION_NAME"]
                 item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) #+ "?"+"&".join([k for k in geometry])
                 option = html.OPTION(item)
                 option.value = "%i"%chosen
                 sel <= option
                 csvText += ",".join([
                     "%i"%chosen,
-                    properties.get("timestamp",time.ctime()),
+                    properties.get("STN_ID","NaN"),
+                    properties.get("DLY_LAST_DATE","1970-01-01 00:00:00"),
                     properties.get("pres"+language,"NaN"),
                     properties.get("temp","NaN"),
                     properties.get("speed","NaN"),
