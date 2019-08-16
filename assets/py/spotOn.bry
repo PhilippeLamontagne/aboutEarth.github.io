@@ -61,7 +61,7 @@ def updateMap(ev):
             #document["Ws"].value=fields[5]
             #document["Wb"].value=fields[6]
             #map.setView(latlonalt) # optional third list element is altitude
-            window.alert(",".join(reports))
+            window.alert("\n".join([",".join(report) for report in reports]))
             
             # reset the data for the graphs
             resetGraph()
