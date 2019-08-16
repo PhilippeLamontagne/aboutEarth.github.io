@@ -118,7 +118,7 @@ async def refreshPageSize():
                 sel <= option
                 csvText += ",".join([
                     "%i"%chosen,
-                    properties.get("STN_ID","NaN"),
+                    "%i"%properties.get("STN_ID", 0),
                     properties.get("DLY_LAST_DATE","1970-01-01 00:00:00"),
                     properties.get("pres"+language,"NaN"),
                     properties.get("temp","NaN"),
