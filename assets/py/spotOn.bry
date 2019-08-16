@@ -79,7 +79,7 @@ async def refreshPageSize():
 
     request = await aio.get(url2CanadianWeather)#,format="application/json")
     geoJSON = json.loads(request.data)
-    window.updateGeoJSON(json.dumps(geoJSON).encode(encoding='UTF-8'))   
+    window.updateGeoJSON(json.dumps(geoJSON))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
     try:
@@ -129,7 +129,7 @@ async def refreshPageSize():
                 ])
                 csvText += "\n"
                 chosen += 1
-            document["csv"].value=csvText
+            document["csv"].value=csvText.encode()
             if "pageOfStations" in document:
                 document["pageOfStations"].remove()
             sel.id=sel.name="pageOfStations"
