@@ -213,8 +213,8 @@ ydr = Bokeh.Range1d.new({ "start": -10.01, "end": 10.01 });
 rdr = Bokeh.Range1d.new({ "start": -360.0, "end": 360.0 });
 
 # make the plot and add some tools
-tools = "pan,zoom_in,zoom_out,reset"
-fig1 = plt.figure({'title': "Sine wave (1 RPM)", 'tools': tools, 'height': 300})
+# tools = "pan,zoom_in,zoom_out,reset"
+fig1 = plt.figure({'title': "Sine wave (1 RPM)", 'height': 300})
 
 fig1.x_range=xdr
 fig1.y_range=ydr
