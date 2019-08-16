@@ -47,11 +47,11 @@ def updateMap(ev):
     sel = document["pageOfStations"]
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
-    lines = [line for line in csvText.split() if any([line.startswith(t+",") for t in featuredStations])]
+    lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
     for id in featuredStations:
         reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
-        fields = [ report for report in reports if all([len(f)>0 for f in report])][-1:]
-        if len(reports)>0:
+        fields = [ report for report in reports if all([len(f)>0 for f in report])]
+        if len(fields)>0:
             fields=fields[-1]
             #latlonalt = [ float(fields[-2]), float(fields[-1]) ]
             #document["I"].value=fields[1]
@@ -115,7 +115,7 @@ async def refreshPageSize():
                 csvText += ",".join([
                     "%i"%chosen,
                     "%i"%properties.get("STN_ID", 0),
-                    geoJSON["timeStamp"], #properties.get("DLY_LAST_DATE",""),
+                    properties.get("DLY_LAST_DATE",""),#geoJSON["timeStamp"], #
                     properties.get("pres"+language,""),
                     properties.get("temp",""),
                     properties.get("speed",""),
