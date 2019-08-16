@@ -9,8 +9,23 @@ from browser import timer, aio
 from browser.timer import request_animation_frame as raf
 from browser.timer import cancel_animation_frame as caf
 
+# 'importing' the Javascript libraries
+Bokeh = window.Bokeh
+plt = Bokeh.Plotting
 leaflet = window.L
 map = window.map
+
+# ##############################
+# paramters of graph
+theta0 = 0.0
+falseTheta = 0 
+nx = 2
+colours = ["#666699","yellow"] 
+sources = [ Bokeh.ColumnDataSource.new({
+    'data': {'x': list(range(nx+1)), 'y': [0.0]*(nx+1) }
+}) for _ in colours ]
+
+# ##############################
 
 copyleft = {
     "maxZoom": 18,
@@ -19,12 +34,16 @@ copyleft = {
     ' contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 }
 
-
 pageNum=0
 pageSize=12
 
+def resetGraph():
+    global nx
+    nx = 1 #timed functions will detect nx=1 and reset data accordingly
+    
 def updateMap(ev):
     global map
+    
     sel = document["pageOfStations"]
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
@@ -44,6 +63,10 @@ def updateMap(ev):
             #latlng = leaflet.latLng(latlonalt[0], latlonalt[1]);
             #sphericalMercator = leaflet.Projection.SphericalMercator.project(latlng);
             #map.setView(sphericalMercator) # optional third list element is altitude
+            
+            # reset the data for the graphs
+            resetGraph()
+
         else:
             window.alert("Incomplete data from station")
 
@@ -166,11 +189,6 @@ timerInstances = 0
 counter = datetime.now()
 id = None
 
-# paramters of graph
-theta0 = 0.0
-falseTheta = 0 
-nx = 2
-
 def UpdateTheta0(delta):
     global theta0,falseTheta
     #    
@@ -189,10 +207,6 @@ def UpdateTheta0(delta):
     #fi
     return ((360.0 - theta0) if falseTheta else theta0)
     
-# 'importing' the library
-Bokeh = window.Bokeh
-plt = Bokeh.Plotting
-
 # create some ranges for the plot
 xdr = Bokeh.Range1d.new({ "start": 0, "end": nx });
 ydr = Bokeh.Range1d.new({ "start": -10.01, "end": 10.01 });
@@ -209,14 +223,6 @@ yra = Bokeh.LinearAxis.new({"y_range_name":"direction"})
 yra.axis_line_color="yellow"
 yra.visible = False
 fig1.add_layout(yra, 'right')
-
-#source = Bokeh.ColumnDataSource.new({
-#    'data': {'x': [x * 360.0/nx for x in range(nx+1)], 'y': [0.0]*(nx+1) }
-#})
-colours = ["#666699","yellow"] 
-sources = [ Bokeh.ColumnDataSource.new({
-    'data': {'x': list(range(nx+1)), 'y': [0.0]*(nx+1) }
-}) for _ in colours ]
 
 lines = [fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source,
     "line_width": 2,
