@@ -8,6 +8,12 @@ Environmental data is freely available from a number of sources.
 
 Sources of open data on the web typically conform to a published standard and may provide an API to assist in gathering the data for your purposes.  The use of the API often requires that the user register a website (such as the ones listed below) to add traceability and help prevent denial-of-service attacks.
 
+The [Meteorological Service of Canada provides an API](https://geo.weather.gc.ca/geomet/features/api?f=html) for access to information about the weather and climate.  The API supports three typs of services:
+
+   1. Web Mapping Service (WMS) mainly provides data in maps format with option to query values for individual pixels.
+   2. Web Coverage Service (WCS) provide grids, point clouds, and general meshes of space/time varying phenomena.
+   3. Web Feature Services (WFS) provides parsable data in GeoJSON and other formats
+
 Some example client application hosted on this site
    * [SpotOn](https://StephenMottyNRC.github.io/SpotOn)
    
