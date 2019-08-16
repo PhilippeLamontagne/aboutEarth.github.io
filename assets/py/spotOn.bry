@@ -115,7 +115,7 @@ async def refreshPageSize():
                 csvText += ",".join([
                     "%i"%chosen,
                     "%i"%properties.get("STN_ID", 0),
-                    properties.get("DLY_LAST_DATE",""),
+                    geoJSON["timeStamp"], #properties.get("DLY_LAST_DATE",""),
                     properties.get("pres"+language,""),
                     properties.get("temp",""),
                     properties.get("speed",""),
