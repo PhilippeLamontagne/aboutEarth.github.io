@@ -69,7 +69,7 @@ def updateMap(ev):
             resetGraph()
 
         else:
-            window.alert("Incomplete data from station\n%s"%"".join(lines)
+            window.alert("Incomplete data from station\n%s"%"".join(lines))
 
 async def refreshPageSize():
     global pageSize,pageNum
