@@ -79,7 +79,7 @@ async def refreshPageSize():
 
     request = await aio.get(url2CanadianWeather)#,format="application/json")
     geoJSON = json.loads(request.data)
-    window.updateGeoJSON(json.dumps(geoJSON).encode(encoding='UTF-8',errors='strict'))   
+    window.updateGeoJSON(json.dumps(geoJSON).encode(encoding='UTF-8'))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
     try:
