@@ -5,20 +5,20 @@ layout: leaflet
 
 This site is currently under construction and is provided AS IS to serve as a reference for similiar endeavours by open data enthusiasts.
 
+<form name="analyze" id="analyze" action="analyze.html" method="GET">
 <table border="0" width="100%"><tbody>
-<tr><td width="100%">
-    <form name="analyze" id="analyze" action="analyze.html" method="GET">
+<tr><td colspan="2">
+    <input  id="ticker" width="100%" name="ticker" disabled="1" readonly="1" value="" /> 
+</td></tr><tr><td width="50%">
         <select name="pagesize" id="pagesize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select>
         <div name="stations" id="stations"></div><br />
         <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" disabled="1" value="Previous" />
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
         <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
-        <p />
-    <div name="datasets" id="datasets"></div><br />
-    <input  id="ticker" width="100%" name="ticker" disabled="1" readonly="1" value="" /> 
-</form>
+</td><td><div name="datasets" id="datasets"></div>
 </td></tr>
 </tbody></table>
+</form>
 
 <script>
 proj4.defs("urn:ogc:def:crs:OGC:1.3:CRS84", "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
