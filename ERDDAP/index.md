@@ -12,7 +12,8 @@ This site is currently under construction and is provided AS IS to serve as a re
         <div name="stations" id="stations"></div><br />
         <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" disabled="1" value="Previous" />
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
-    <p />
+        <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
+        <p />
     <input  id="ticker" width="100%" name="ticker" disabled="1" readonly="1" value="" /> 
 </form>
 </td></tr>
