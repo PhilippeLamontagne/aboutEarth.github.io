@@ -52,7 +52,8 @@ async def refreshPageSize():
     window.updateGeoJSON(json.dumps(geoJSON))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
-    try:
+#    try:
+    if True:
         entries = len(geoJSON["features"])
         if entries>0:
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
@@ -100,8 +101,8 @@ async def refreshPageSize():
             sel.id=sel.name="pageOfStations"
             sel.bind("change", updateMap)
             document["stations"] <= sel
-    except:
-        pass
+#    except:
+#        pass
 
 def updatePageSize(ev):
     global pageSize,pageNum
