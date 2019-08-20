@@ -52,8 +52,7 @@ async def refreshPageSize():
     window.updateGeoJSON(json.dumps(geoJSON))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
-#    try:
-    if True:
+    try:
         entries = len(geoJSON["features"])
         if entries>0:
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
@@ -101,8 +100,8 @@ async def refreshPageSize():
             sel.id=sel.name="pageOfStations"
             sel.bind("change", updateMap)
             document["stations"] <= sel
-#    except:
-#        pass
+    except:
+        pass
 
 def updatePageSize(ev):
     global pageSize,pageNum
@@ -146,12 +145,29 @@ document["formerpage"].bind("click", formerPage)
 document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
+async def updateTicker():
+    global pageSize,pageNum
+    geoJSON = {}
+    url2ERDDAP = "https://www.ncei.noaa.gov/erddap/categorize/institution/rsmas_and_ncep/index.json?page=1&itemsPerPage=1000"
 
-def Every500ms():
-    if not ("pageOfStations" in document):
+    request = await aio.get(url2ERDDAP)
+    geoJSON = json.loads(request.data)
+    table=geoJSON["table"]
+    document["ticker"].value="%i"%len(table["rows"])
+
+stationsPending=False;
+def Every5s():
+    global stationsPending;
+    if ("pageOfStations" in document):
+        stationsPending=False
+        aio.run(updateTicker())
+    elif not stationsPending:
+        stationsPending=True
         aio.run(refreshPageSize())
 
-timer.set_timeout(Every500ms, 500)
+    timer.set_timeout(Every5s, 5000)
+
+timer.set_timeout(Every5s, 0)
 
 #animation/timed updates
 
