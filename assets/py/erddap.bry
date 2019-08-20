@@ -160,7 +160,7 @@ async def updateTicker():
 
     if len(llas)>0:
         sel = document["pageOfDatasets"]
-        featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0)]
+        featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
         datasets = []
         for dataset in featuredDatasets:
             geoJSON = {}
@@ -208,7 +208,7 @@ async def updateDatasets():
             pass
             
     if len(rows):
-        sel = html.SELECT(size=1, multiple=True)
+        sel = html.SELECT(size=8, multiple=True)
         item = ("Select datasets:")
         option = html.OPTION(item)
         option.value = ""
