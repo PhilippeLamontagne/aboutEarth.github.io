@@ -189,7 +189,7 @@ async def updateTicker():
             except:
                 pass
 
-        document["ticker"].value="\n".join(lines)
+        document["ticker"].innerHTML="\n".join(lines)
     
 async def updateDatasets():
     geoJSON = {}
