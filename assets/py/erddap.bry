@@ -163,11 +163,9 @@ async def updateTicker():
         featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
         datasets = []
         for dataset in featuredDatasets:
-            geoJSON = {}
-
             request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
-            geoJSON = json.loads(request.data)
             try:
+                geoJSON = json.loads(request.data)
                 table=geoJSON["table"]
                 for row in table["rows"]:
                     if row[2]=="geospatial_lat_max" and lla[0]>float(row[-1]):
@@ -182,7 +180,16 @@ async def updateTicker():
             except:
                 pass
 
-        document["ticker"].value="+".join(datasets)
+        lines=[]
+        for dataset in datasets:
+            request = await aio.get("https://www.ncei.noaa.gov/erddap/griddap/%s.json?latitude[(%f):1:(%f)],longitude[(%f):1:(%f)]"%(dataset,llas[0]-1.0,llas[0]+1.0,llas[1]-1.0,llas[1]+1.0))
+            try:
+                geoJSON = json.loads(request.data)
+                lines += [dataset]
+            except:
+                pass
+
+        document["ticker"].value="\n".join(lines)
     
 async def updateDatasets():
     geoJSON = {}
