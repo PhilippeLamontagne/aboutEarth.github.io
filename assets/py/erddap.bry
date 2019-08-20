@@ -159,7 +159,7 @@ async def updateDatasets():
     geoJSON = json.loads(request.data)
     try:
         table=geoJSON["table"]
-        if(len(table["rows"]):
+        if len(table["rows"]):
             sel = html.SELECT(size=1, multiple=True)
             item = ("Select datasets:")
             option = html.OPTION(item)
