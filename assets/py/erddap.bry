@@ -1,0 +1,157 @@
+# <!-- script type="text/python" -->
+from browser import document, window, aio
+import time
+import math
+from datetime import datetime
+import json
+from browser import html
+from browser import timer, aio
+from browser.timer import request_animation_frame as raf
+from browser.timer import cancel_animation_frame as caf
+
+# 'importing' the Javascript libraries
+Bokeh = window.Bokeh
+plt = Bokeh.Plotting
+leaflet = window.L
+map = window.map
+
+copyleft = {
+    "maxZoom": 18,
+    "attribution": 'Map data &copy; ' \
+    '<a href="https://www.openstreetmap.org/">OpenStreetMap</a>' \
+    ' contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+}
+
+pageNum=0
+pageSize=24
+
+def updateMap(ev):
+    global map
+    
+    sel = document["pageOfStations"]
+    csvText = document["csv"].value
+    featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
+    lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
+    for id in featuredStations:
+        reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
+        fields = [ report for report in reports if all([len(f)>0 for f in report])]
+        if len(fields)>0:
+            fields=fields[-1]
+            latlonalt = [ float(fields[-2]), float(fields[-1]) ]
+            map.setView(latlonalt) # optional third list element is altitude           
+        else:
+            window.alert("Incomplete data from station")
+
+async def refreshPageSize():
+    global pageSize,pageNum
+    geoJSON = {}
+    url2CanadianWeather = "https://geo.weather.gc.ca/geomet/features/collections/climate-stations/items?f=json&limit=10000&sortby=LONGITUDE%3AD%2CLATITUDE%3AA&startindex=0&COUNTRY=CAN&HAS_MONTHLY_SUMMARY=Y"
+
+    request = await aio.get(url2CanadianWeather)#,format="application/json")
+    geoJSON = json.loads(request.data)
+    window.updateGeoJSON(json.dumps(geoJSON))   
+    document["nextpage"].disabled=True
+    document["formerpage"].disabled=True
+    try:
+        entries = len(geoJSON["features"])
+        if entries>0:
+            pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
+            holdPageNum = pageNum
+            sel = html.SELECT(size=1, multiple=False)
+            if (holdPageNum>=pages) or (holdPageNum<0):
+                holdPageNum = pages-1
+            else:
+                document["nextpage"].disabled=False
+            
+            if holdPageNum>0:
+                document["formerpage"].disabled=False
+
+            chosen = choice = pageSize*holdPageNum
+
+            language = "_en"
+            item = ("Select a station:")
+            option = html.OPTION(item)
+            option.value = "-1"
+            sel <= option
+            csvText = ""
+            for feature in geoJSON["features"][choice:choice+pageSize]:
+                type = feature["type"]
+                geometry = feature["geometry"]
+                lonlat = [float(v) for v in geometry["coordinates"]]
+                properties = feature["properties"]
+                station = properties["STATION_NAME"]
+                item = ("Station #%i: %s %05.2f N %06.2f W"%(chosen,station,lonlat[1],-lonlat[0])) 
+                option = html.OPTION(item)
+                option.value = "%i"%chosen
+                sel <= option
+                csvText += ",".join([
+                    "%i"%chosen,
+                    "%i"%properties.get("STN_ID", 0),
+                    station,
+                    geoJSON["timeStamp"], 
+                    "%f"%lonlat[1],
+                    "%f"%lonlat[0]
+                ])
+                csvText += "\n"
+                chosen += 1
+            document["csv"].value=csvText
+            if "pageOfStations" in document:
+                document["pageOfStations"].remove()
+            sel.id=sel.name="pageOfStations"
+            sel.bind("change", updateMap)
+            document["stations"] <= sel
+    except:
+        pass
+
+def updatePageSize(ev):
+    global pageSize,pageNum
+    pageSize = int(ev.target.value)
+    aio.run(refreshPageSize())
+
+def nextPage(ev):
+    global pageSize,pageNum
+    myPageNum = pageNum
+    if pageSize>0 and "pageOfStations" in document:
+        sel = document["pageOfStations"]
+        myPageNum = int(min([int(option.value) for option in sel if (int(option.value)>=0)])/pageSize)
+
+    pageNum = myPageNum + 1
+    aio.run(refreshPageSize())
+
+def formerPage(ev):
+    global pageSize,pageNum
+    myPageNum = pageNum
+    if pageSize>0 and "pageOfStations" in document:
+        sel = document["pageOfStations"]
+        myPageNum = int(min([int(option.value) for option in sel if (int(option.value)>=0)])/pageSize)
+    
+    if myPageNum>0:
+        pageNum = myPageNum - 1
+        aio.run(refreshPageSize())
+
+def firstPage(ev):
+    global pageSize,pageNum
+    pageNum = 0
+    aio.run(refreshPageSize())
+
+def lastPage(ev):
+    global pageSize,pageNum
+    pageNum = -1
+    aio.run(refreshPageSize())
+
+document["pagesize"].bind("change", updatePageSize)
+document["nextpage"].bind("click", nextPage)
+document["formerpage"].bind("click", formerPage)
+document["firstpage"].bind("click", firstPage)
+document["lastpage"].bind("click", lastPage)
+
+
+def Every500ms():
+    if not ("pageOfStations" in document):
+        aio.run(refreshPageSize())
+
+timer.set_timeout(Every500ms, 500)
+
+#animation/timed updates
+
+# <!-- /script -->
