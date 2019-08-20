@@ -8,7 +8,7 @@ This site is currently under construction and is provided AS IS to serve as a re
 <form name="analyze" id="analyze" action="analyze.html" method="GET">
 <table border="0" width="100%"><tbody>
 <tr><td colspan="2">
-    <input  id="ticker" width="100%" name="ticker" disabled="1" readonly="1" value="" /> 
+    <textarea  id="ticker" rows="4" cols="50" name="ticker" disabled="1" readonly="1" /> 
 </td></tr><tr><td width="50%">
         <select name="pagesize" id="pagesize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select>
         <div name="stations" id="stations"></div><br />
