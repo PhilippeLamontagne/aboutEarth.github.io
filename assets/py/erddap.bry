@@ -146,21 +146,51 @@ document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
 async def updateTicker():
+    v=document["ticker"].value
+    i=(0 if v=="" else int(v))
+    document["ticker"].value="%i"%(i+1)
+    
+async def updateDatasets():
     global pageSize,pageNum
     geoJSON = {}
-    url2ERDDAP = "https://www.ncei.noaa.gov/erddap/categorize/institution/rsmas_and_ncep/index.json?page=1&itemsPerPage=1000"
+    url2ERDDAP = "https://www.ncei.noaa.gov/erddap/categorize/institution/rsmas_and_ncep/index.json?page=1&itemsPerPage=50"
 
     request = await aio.get(url2ERDDAP)
     geoJSON = json.loads(request.data)
-    table=geoJSON["table"]
-    document["ticker"].value="%i"%len(table["rows"])
+    try:
+        table=geoJSON["table"]
+        if(len(table["rows"]):
+            sel = html.SELECT(size=1, multiple=True)
+            item = ("Select datasets:")
+            option = html.OPTION(item)
+            option.value = "-1"
+            sel <= option
+            for row in table["rows"]:
+                dataset = row[-1]
+                option = html.OPTION(dataset)
+                option.value = "%i"%chosen
+                option.selected = 1
+                sel <= option
+            if "pageOfDatasets" in document:
+                document["pageOfDatasets"].remove()
+            sel.id=sel.name="pageOfDatasets"
+            document["datasets"] <= sel
+    except:
+        pass
 
 stationsPending=False;
+datasetsPending=False;
 def Every5s():
     global stationsPending;
+    global datasetsPending;
     if ("pageOfStations" in document):
         stationsPending=False
-        aio.run(updateTicker())
+        if ("pageOfDatasets" in document):
+            datasetsPending=False
+            aio.run(updateTicker())
+        elif not datasetsPending:
+            datasetsPending=True
+            aio.run(updateDatasets())            
     elif not stationsPending:
         stationsPending=True
         aio.run(refreshPageSize())
