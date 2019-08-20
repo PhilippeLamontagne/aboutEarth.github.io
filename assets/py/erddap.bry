@@ -165,12 +165,14 @@ async def updateDatasets():
             option = html.OPTION(item)
             option.value = "-1"
             sel <= option
+            chosen = 0
             for row in table["rows"]:
                 dataset = row[-1]
                 option = html.OPTION(dataset)
                 option.value = "%i"%chosen
                 option.selected = 1
                 sel <= option
+                chosen += 1
             if "pageOfDatasets" in document:
                 document["pageOfDatasets"].remove()
             sel.id=sel.name="pageOfDatasets"
