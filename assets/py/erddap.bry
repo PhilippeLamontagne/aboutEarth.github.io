@@ -153,32 +153,45 @@ async def updateTicker():
 async def updateDatasets():
     global pageSize,pageNum
     geoJSON = {}
-    url2ERDDAP = "https://www.ncei.noaa.gov/erddap/categorize/institution/rsmas_and_ncep/index.json?page=1&itemsPerPage=50"
-
-    request = await aio.get(url2ERDDAP)
+    
+    request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/index.json?page=1&itemsPerPage=50)
     geoJSON = json.loads(request.data)
+
+    institutions=[]
     try:
         table=geoJSON["table"]
-        if len(table["rows"]):
-            sel = html.SELECT(size=1, multiple=True)
-            item = ("Select datasets:")
-            option = html.OPTION(item)
-            option.value = "-1"
-            sel <= option
-            chosen = 0
-            for row in table["rows"]:
-                dataset = row[-1]
-                option = html.OPTION(dataset)
-                option.value = "%i"%chosen
-                option.selected = 1
-                sel <= option
-                chosen += 1
-            if "pageOfDatasets" in document:
-                document["pageOfDatasets"].remove()
-            sel.id=sel.name="pageOfDatasets"
-            document["datasets"] <= sel
+        institutions += [row[0] for row in table["rows"] if len(row)>0]
     except:
         pass
+        
+    rows=[]
+    for institution in institutions:
+        request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/%s/index.json?page=1&itemsPerPage=50"%institution)
+        geoJSON = json.loads(request.data)
+        try:
+            table=geoJSON["table"]
+            rows += [row for row in table["rows"] if row[0].endswith("_by_time_lat_lon")]
+        except:
+            pass
+            
+    if len(rows):
+        sel = html.SELECT(size=1, multiple=True)
+        item = ("Select datasets:")
+        option = html.OPTION(item)
+        option.value = "-1"
+        sel <= option
+        chosen = 0
+        for row in rows:
+            dataset = row[-1]
+            option = html.OPTION(dataset)
+            option.value = "%i"%chosen
+            option.selected = 1
+            sel <= option
+            chosen += 1
+        if "pageOfDatasets" in document:
+            document["pageOfDatasets"].remove()
+        sel.id=sel.name="pageOfDatasets"
+        document["datasets"] <= sel
 
 stationsPending=False;
 datasetsPending=False;
