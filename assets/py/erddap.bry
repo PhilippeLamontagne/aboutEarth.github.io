@@ -154,7 +154,7 @@ async def updateDatasets():
     global pageSize,pageNum
     geoJSON = {}
     
-    request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/index.json?page=1&itemsPerPage=50)
+    request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/index.json?page=1&itemsPerPage=50")
     geoJSON = json.loads(request.data)
 
     institutions=[]
