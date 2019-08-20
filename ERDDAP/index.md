@@ -5,8 +5,8 @@ layout: leaflet
 
 This site is currently under construction and is provided AS IS to serve as a reference for similiar endeavours by open data enthusiasts.
 
-<table border="0"><tbody>
-<tr><td>
+<table border="0" width="100%"><tbody>
+<tr><td width="100%">
     <form name="analyze" id="analyze" action="analyze.html" method="GET">
         <select name="pagesize" id="pagesize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select>
         <div name="stations" id="stations"></div><br />
