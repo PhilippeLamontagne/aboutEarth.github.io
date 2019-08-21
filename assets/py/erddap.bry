@@ -259,6 +259,7 @@ def Every5s():
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
+    timer.set_timeout(Every5s, 5000)
 
 Every5s()
 timer.set_timeout(Every5s, 5000)
