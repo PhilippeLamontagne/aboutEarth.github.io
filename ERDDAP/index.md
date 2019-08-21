@@ -14,9 +14,9 @@ This site is currently under construction and is provided AS IS to serve as a re
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" /><br />
         <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
         <textarea  id="ticker" rows="4" cols="125" name="ticker" disabled="1" readonly="1" ></textarea> 
-</td></tr><tr><td width="50%">
+</td></tr><tr><td width="50%" valign="top">
 <div name="datasets" id="datasets"></div>
-</td><td>
+</td><td valign="top">
     <select name="field" id="field"><option value="T" selected="1">Temperature</option><option value="P">Pressure</option><option value="W">Wind</option></select>
     <div id="graphs"></div>
 </td></tr>
