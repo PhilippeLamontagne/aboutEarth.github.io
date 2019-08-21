@@ -147,11 +147,11 @@ document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
 async def updateTicker():    
-    sel = document["pageOfStations"]
-    csvText = document["csv"].value
+    #sel = document["pageOfStations"]
+    #csvText = document["csv"].value
     #featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
-    lines = [line for line in csvText.split("\n")]# if any([line.startswith(t+",") for t in featuredStations])]
-        
+    #lines = [line for line in csvText.split("\n")]# if any([line.startswith(t+",") for t in featuredStations])]
+    lines=["this","is","a",message"]
     document["ticker"].value="\n".join(lines)
     
 async def updateDatasets():
