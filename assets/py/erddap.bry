@@ -151,7 +151,8 @@ async def updateTicker():
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
     lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
-    latllonalt = []
+
+    """ latllonalt = []
     for id in featuredStations:
         reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
         fields = [ report for report in reports if all([len(f)>0 for f in report])]
@@ -197,7 +198,8 @@ async def updateTicker():
                 lines += [dataset]
             except:
                 pass
-
+        """
+        
         document["ticker"].value="\n".join(lines)
     
 async def updateDatasets():
