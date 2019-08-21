@@ -7,7 +7,7 @@ This web page is reserved for use with the  [OpenStreetMap](https://www.openstre
 
 This site is currently under construction and is provided AS IS to serve as a reference for similiar endeavours by open data enthusiasts.
 
-<table border="0"><tbody>
+<table border="0" style="margin:auto"><tbody>
 <tr><td style="width:640px">
     <form name="analyze" id="analyze" action="analyze.html" method="GET">
         <select name="pagesize" id="pagesize"><option value="12">12</option><option value="24">24</option><option value="48">48</option></select>
@@ -25,11 +25,6 @@ This site is currently under construction and is provided AS IS to serve as a re
     Source des données: Environnement et Changement climatique Canada</td></tr>
     </tbody></table>
     <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
-</form>
-</td><td>
-    <form name="visualize" id="visualize" action="visualize.html" method="GET">
-    <select name="field" id="field"><option value="T" selected="1">Temperature</option><option value="P">Pressure</option><option value="W">Wind</option></select>
-    <div id="graphs"></div>
 </form>
 </td></tr>
 </tbody></table>
