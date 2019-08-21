@@ -16,6 +16,7 @@ This site is currently under construction and is provided AS IS to serve as a re
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
     <p />
     <table border="0"><tbody>
+    <tr><td>Station: </td><td colspan="2"><input  id="I" name="I" disabled="1" readonly="1" value="" /> </td></tr>
     <tr><td>Timestamp: </td><td colspan="2"><input  id="X" name="X" disabled="1" readonly="1" value="" /> </td></tr>
     <tr><td>Temperature: </td><td colspan="2"><input style="max-width:6em" id="T" name="T" disabled="1" readonly="1" value="" /> &deg;C</td></tr>
     <tr><td >Pressure: </td><td colspan="2"><input style="max-width:6em" id="P" name="P" disabled="1" readonly="1" value="" /> kPa</td></tr>
