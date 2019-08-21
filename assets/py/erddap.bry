@@ -209,13 +209,14 @@ def Every5s():
         aio.run(refreshPageSize())
     if ("pageOfDatasets" in document):
         datasetsPending=False
-        if datasets["ticker"].value!="":
+        if document["ticker"].value!="":
             if not datasetPending:
-                datasets["ticker"].value=""
+                document["ticker"].value=""
             datasetPending=False
         elif not datasetPending:
             datasetPending=True;
-            aio.run(updateTicker())
+            document["ticker"].value="Cannot update Ticker"
+            #aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
