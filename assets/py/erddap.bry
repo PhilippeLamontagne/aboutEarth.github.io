@@ -147,12 +147,12 @@ document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
 async def updateTicker():    
-    #sel = document["pageOfStations"]
-    #csvText = document["csv"].value
-    #featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
-    #lines = [line for line in csvText.split("\n")]# if any([line.startswith(t+",") for t in featuredStations])]
-    lines=["this","is","a","message"]
-    document["ticker"].value="\n".join(lines)
+    sel = document["pageOfStations"]
+    csvText = document["csv"].value
+    featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
+    lines = [line for line in csvText.split("\n")]# if any([line.startswith(t+",") for t in featuredStations])]
+    #lines=["this","is","a","message"]
+    document["ticker"].value="\n".join([",".join(line) for line in lines])
     
 async def updateDatasets():
     geoJSON = {}
@@ -215,8 +215,8 @@ def Every5s():
             datasetPending=False
         elif not datasetPending:
             datasetPending=True;
-            document["ticker"].value="Cannot update Ticker"
-            #aio.run(updateTicker())
+            #document["ticker"].value="Cannot update Ticker"
+            aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
