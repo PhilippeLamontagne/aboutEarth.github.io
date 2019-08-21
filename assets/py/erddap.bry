@@ -241,20 +241,176 @@ def Every5s():
     global datasetsPending;
     if ("pageOfStations" in document):
         stationsPending=False
-        if ("pageOfDatasets" in document):
-            datasetsPending=False
-            aio.run(updateTicker())
-        elif not datasetsPending:
-            datasetsPending=True
-            aio.run(updateDatasets())            
     elif not stationsPending:
         stationsPending=True
         aio.run(refreshPageSize())
-
-    timer.set_timeout(Every5s, 5000)
+    if ("pageOfDatasets" in document):
+        datasetsPending=False
+        #aio.run(updateTicker())
+    elif not datasetsPending:
+        datasetsPending=True
+        aio.run(updateDatasets())            
 
 timer.set_timeout(Every5s, 0)
 
 #animation/timed updates
+# ##############################
+# paramters of graph
+theta0 = 0.0
+falseTheta = 0 
+nx = 2
+colours = ["#666699","yellow"] 
+sources = [ Bokeh.ColumnDataSource.new({
+    'data': {'x': list(range(nx+1)), 'y': [0.0]*(nx+1) }
+}) for _ in colours ]
+
+# ##############################
+## Graphing component (TODO: put in separate module)
+stopRequested = False
+timerInstances = 0
+counter = datetime.now()
+id = None
+
+def resetGraph():
+    global nx
+    nx = 1 #timed functions will detect nx=1 and reset data accordingly
+
+def UpdateTheta0(delta):
+    global theta0,falseTheta
+    #    
+    delta = delta % 360.0 #make sure delta is positive and modulo 360
+    if falseTheta == 0:
+        theta0 += delta
+    else:
+        theta0 -= delta
+    #fi
+    if theta0>360.0:
+        theta0 = 360.0 - (theta0%360.0)
+        falseTheta = 360
+    if theta0<0.0:
+        theta0 = - (theta0%-360.0)
+        falseTheta = 0
+    #fi
+    return ((360.0 - theta0) if falseTheta else theta0)
+    
+# create some ranges for the plot
+xdr = Bokeh.Range1d.new({ "start": 0, "end": nx });
+ydr = Bokeh.Range1d.new({ "start": -10.01, "end": 10.01 });
+rdr = Bokeh.Range1d.new({ "start": -360.0, "end": 360.0 });
+
+# make the plot and add some tools
+tools = "save" #"pan,zoom_in,zoom_out,reset"
+fig1 = plt.figure({'title': "Sine wave (1 RPM)", 'tools': tools, 'height': 300})
+
+fig1.x_range=xdr
+fig1.y_range=ydr
+fig1.extra_y_ranges["direction"]=rdr
+yra = Bokeh.LinearAxis.new({"y_range_name":"direction"})
+yra.axis_line_color="yellow"
+yra.visible = False
+fig1.add_layout(yra, 'right')
+
+lines = [fig1.line({"x": {"field" : "x"}, "y": {"field": "y"}, "source" : source,
+    "line_width": 2,
+    "line_color": colour,
+    "line_dash" : []
+}) for source,colour in zip(sources,colours)]
+lines[-1].y_range_name=("direction") 
+lines[-1].visible = False
+
+def updateDataRanges(ev):
+    sel = document["field"]
+    fieldIds = [option.value for option in sel if option.selected]
+    if any(fieldIds):
+        if fieldIds[-1]=="T":  
+            ydr["start"]=-50.0
+            ydr["end"]=50.0
+            yra.visible = False
+            lines[-1].visible = False
+        elif fieldIds[-1]=="P":  
+            ydr["start"]=85.0
+            ydr["end"]=110.0
+            yra.visible = False
+            lines[-1].visible = False
+        elif fieldIds[-1]=="W":  
+            ydr["start"]=0.0
+            ydr["end"]=200.0
+            yra.visible = True
+            lines[-1].visible = True
+        else:
+            ydr["start"]=-0.0
+            ydr["end"]=0.0
+            yra.visible = False
+            lines[-1].visible = False
+        #fig1.y_range=ydr
+
+document["field"].bind("change", updateDataRanges)
+updateDataRanges(None)
+
+# show the plot
+mydiv = document['graphs']
+plt.show(fig1, mydiv.elt)
+
+def UpdateFig1(theta0):
+    global nx
+    # generate the source data
+    if nx<10:
+        nx += 1
+        xdr["end"]=nx
+    delta = (360.0/nx)%360.0    
+    yPeak = 0.5*(ydr["end"]- ydr["start"])
+    yAvg = 0.5*(ydr["end"]+ ydr["start"])
+    dt = [x * delta for x in range(nx+1)]
+    dy = [ yAvg + yPeak * math.sin(math.radians(theta0+dTheta)) for dTheta in dt]
+    #update the source data
+    sources[-1].data.x = sources[0].data.x = list(range(nx+1)) 
+    sources[0].data.y = dy
+    sources[-1].data.y = [ theta0+dTheta for dTheta in dt ]
+    sources[0].change.emit()
+    sources[-1].change.emit()
+    
+#animation/timed updates
+def TimerUpdate(o):
+    global stopRequested
+    global id
+    global counter
+    #
+    if stopRequested:
+        id = None
+    else:
+        now = datetime.now()
+        elapsed = now - counter
+        if elapsed.total_seconds()>=1.0:
+            counter = now
+            theta0 = UpdateTheta0(6.0) #6-degrees per second
+            UpdateFig1(theta0)
+        #
+        # repeat if all went well
+        id = raf(TimerUpdate)
+
+def StartHandler(ev):
+    global stopRequested
+    global timerInstances
+    global id
+    #
+    stopRequested = False
+    if (timerInstances == 0) and (id is None):
+        timerInstances = 1
+        id = raf(TimerUpdate)
+
+def StopHandler(ev):
+    global stopRequested
+    global timerInstances
+    global id
+    if not (id is None):
+        caf(id)
+        id = None
+    if timerInstances>0:
+        timerInstances -= 1
+    stopRequested = True
+
+    pickkey = ""
+
+StartHandler(0)
 
 # <!-- /script -->
