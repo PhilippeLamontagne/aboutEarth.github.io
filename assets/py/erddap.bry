@@ -48,16 +48,21 @@ async def refreshPageSize():
     url2CanadianWeather = "https://geo.weather.gc.ca/geomet/features/collections/climate-stations/items?f=json&limit=10000&sortby=LONGITUDE%3AD%2CLATITUDE%3AA&startindex=0&COUNTRY=CAN&HAS_MONTHLY_SUMMARY=Y"
 
     request = await aio.get(url2CanadianWeather)#,format="application/json")
-    geoJSON = json.loads(request.data)
-    window.updateGeoJSON(json.dumps(geoJSON))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
+    sel = html.SELECT(size=1, multiple=False)
+    item = ("Select a station:")
+    option = html.OPTION(item)
+    option.value = "-1"
+    sel <= option
+    csvText = ""
     try:
+        geoJSON = json.loads(request.data)
+        window.updateGeoJSON(json.dumps(geoJSON))   
         entries = len(geoJSON["features"])
         if entries>0:
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
-            sel = html.SELECT(size=1, multiple=False)
             if (holdPageNum>=pages) or (holdPageNum<0):
                 holdPageNum = pages-1
             else:
@@ -69,11 +74,6 @@ async def refreshPageSize():
             chosen = choice = pageSize*holdPageNum
 
             language = "_en"
-            item = ("Select a station:")
-            option = html.OPTION(item)
-            option.value = "-1"
-            sel <= option
-            csvText = ""
             for feature in geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
@@ -94,14 +94,15 @@ async def refreshPageSize():
                 ])
                 csvText += "\n"
                 chosen += 1
-            document["csv"].value=csvText
-            if "pageOfStations" in document:
-                document["pageOfStations"].remove()
-            sel.id=sel.name="pageOfStations"
-            sel.bind("change", updateMap)
-            document["stations"] <= sel
     except:
         pass
+        
+    document["csv"].value=csvText
+    if "pageOfStations" in document:
+        document["pageOfStations"].remove()
+    sel.id=sel.name="pageOfStations"
+    sel.bind("change", updateMap)
+    document["stations"] <= sel
 
 def updatePageSize(ev):
     global pageSize,pageNum
@@ -150,21 +151,22 @@ async def updateTicker():
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
     lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
-    llas = []
+    latllonalt = []
     for id in featuredStations:
         reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
         fields = [ report for report in reports if all([len(f)>0 for f in report])]
         if len(fields)>0:
             fields=fields[-1]
-            llas += [ [float(fields[-2]), 360.0+float(fields[-1])] ]
+            latllonalt = [float(fields[-2]), 360.0+float(fields[-1])] 
+            break
 
-    if len(llas)>0:
-        lla=llas[-1]
+    if len(latllonalt)>=2:
         sel = document["pageOfDatasets"]
         featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
         datasets = []
         for dataset in featuredDatasets:
             request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
+            window.alert(dataset)
             try:
                 geoJSON = json.loads(request.data)
                 table=geoJSON["table"]
@@ -177,7 +179,7 @@ async def updateTicker():
                         break
                     if row[2]=="geospatial_lon_min" and lla[1]<float(row[-1]):
                         break
-                    datasets += [dataset]
+                    #datasets += [dataset]
             except:
                 pass
 
@@ -190,7 +192,7 @@ async def updateTicker():
             except:
                 pass
 
-        document["ticker"].innerHTML="\n".join(lines)
+        document["ticker"].value="\n".join(datasets+lines)
     
 async def updateDatasets():
     geoJSON = {}
@@ -215,30 +217,31 @@ async def updateDatasets():
         except:
             pass
             
-    if len(rows):
-        sel = html.SELECT(size=8, multiple=True)
-        item = ("Select datasets:")
-        option = html.OPTION(item)
-        option.value = ""
+    sel = html.SELECT(size=1, multiple=False)
+    item = ("Select datasets:")
+    option = html.OPTION(item)
+    option.value = ""
+    sel <= option
+    chosen = 0
+    for row in rows:
+        dataset = row[-1]
+        option = html.OPTION(dataset)
+        option.value = dataset
+        option.selected = 1
         sel <= option
-        chosen = 0
-        for row in rows:
-            dataset = row[-1]
-            option = html.OPTION(dataset)
-            option.value = dataset
-            option.selected = 1
-            sel <= option
-            chosen += 1
-        if "pageOfDatasets" in document:
-            document["pageOfDatasets"].remove()
-        sel.id=sel.name="pageOfDatasets"
-        document["datasets"] <= sel
+        chosen += 1
+    if "pageOfDatasets" in document:
+        document["pageOfDatasets"].remove()
+    sel.id=sel.name="pageOfDatasets"
+    document["datasets"] <= sel
 
 stationsPending=False;
 datasetsPending=False;
+datasetPending=False;
 def Every5s():
     global stationsPending;
     global datasetsPending;
+    global datasetPending;
     if ("pageOfStations" in document):
         stationsPending=False
     elif not stationsPending:
@@ -246,7 +249,13 @@ def Every5s():
         aio.run(refreshPageSize())
     if ("pageOfDatasets" in document):
         datasetsPending=False
-        #aio.run(updateTicker())
+        if datasets["ticker"].value!="":
+            if not datasetPending:
+                datasets["ticker"].value=""
+            datasetPending=False
+        elif not datasetPending:
+            datasetPending=True;
+            aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
