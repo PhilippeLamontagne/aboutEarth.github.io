@@ -151,56 +151,8 @@ async def updateTicker():
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
     lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
-
-    """ latllonalt = []
-    for id in featuredStations:
-        reports= [ line.split(",") for line in lines if line.startswith(id+",")] 
-        fields = [ report for report in reports if all([len(f)>0 for f in report])]
-        if len(fields)>0:
-            fields=fields[-1]
-            latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
-            break
-
-    if len(latllonalt)>=2:
-        sel = document["pageOfDatasets"]
-        featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
-        datasets = []
-        for dataset in featuredDatasets:
-            request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
-            window.alert(dataset)
-            try:
-                geoJSON = json.loads(request.data)
-                table=geoJSON["table"]
-                ok=True;
-                for row in table["rows"]:
-                    if row[2]=="geospatial_lat_max" and latllonalt[0]>float(row[-1]):
-                        ok=False
-                        break
-                    if row[2]=="geospatial_lat_min" and latllonalt[0]<float(row[-1]):
-                        ok=False
-                        break
-                    if row[2]=="geospatial_lon_max" and latllonalt[1]>float(row[-1]):
-                        ok=False
-                        break
-                    if row[2]=="geospatial_lon_min" and latllonalt[1]<float(row[-1]):
-                        ok=False
-                        break
-                if ok:
-                    datasets += [dataset]
-            except:
-                pass
-
-        lines=["Status:"]
-        for dataset in datasets:
-            #request = await aio.get("https://www.ncei.noaa.gov/erddap/griddap/%s.json?latitude[(%f):1:(%f)],longitude[(%f):1:(%f)]"%(dataset,lla[0]-1.0,lla[0]+1.0,lla[1]-1.0,lla[1]+1.0))
-            try:
-                #geoJSON = json.loads(request.data)
-                lines += [dataset]
-            except:
-                pass
-        """
         
-        document["ticker"].value="\n".join(lines)
+    document["ticker"].value="\n".join(lines)
     
 async def updateDatasets():
     geoJSON = {}
