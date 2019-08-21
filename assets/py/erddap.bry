@@ -152,17 +152,17 @@ async def updateTicker():
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
     lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
     reports= [ line.split(",") for line in lines] 
-    records = [ report for report in reports if all([len(f)>0 for f in report])]
+    records = [ report for report in reports]# if all([len(f)>0 for f in report])]
     datasets = []
     if len(records)>0:
-        fields=records[-1]
-        latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
+        #fields=records[-1]
+        #latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
         sel = document["pageOfDatasets"]
         featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
         for dataset in featuredDatasets:
-            request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
+            #request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
             try:
-                geoJSON = json.loads(request.data)
+                #geoJSON = json.loads(request.data)
                 datasets += [dataset]
             except:
                 pass
@@ -202,7 +202,6 @@ async def updateDatasets():
         dataset = row[-1]
         option = html.OPTION(dataset)
         option.value = dataset
-        option.selected = 1
         sel <= option
         chosen += 1
     if "pageOfDatasets" in document:
