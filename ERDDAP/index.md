@@ -8,16 +8,19 @@ This site is currently under construction and is provided AS IS to serve as a re
 <form name="analyze" id="analyze" action="analyze.html" method="GET">
 <table border="0" width="100%"><tbody>
 <tr><td colspan="2">
-    <textarea  id="ticker" rows="4" cols="125" name="ticker" disabled="1" readonly="1" ></textarea> 
-</td></tr><tr><td width="50%">
         <select name="pagesize" id="pagesize"><option value="24">24</option><option value="48">48</option><option value="96">96</option></select>
         <div name="stations" id="stations"></div><br />
         <input id = "firstpage" name="firstpage" type="button" value="&lt;&lt;" /><input id = "formerpage" name="formerpage" type="button" disabled="1" value="Previous" />
         <input id = "nextpage" name="nextpage" type="button" value="Next" disabled="1" /><input id = "lastpage" name="lastpage" type="button" value="&gt;&gt;" />
         <input type="hidden" id="csv" name="csv" disabled="1" readonly="1" style="display:'none';" value="" />
-</td><td><div name="datasets" id="datasets"></div>
-</td></tr>
+        <textarea  id="ticker" rows="4" cols="125" name="ticker" disabled="1" readonly="1" ></textarea> 
+</td></tr><tr><td width="50%">
+<div name="datasets" id="datasets"></div>
+</td><td>
+    <select name="field" id="field"><option value="T" selected="1">Temperature</option><option value="P">Pressure</option><option value="W">Wind</option></select>
+    <div id="graphs"></div>
 </tbody></table>
+</td></tr>
 </form>
 
 <script>
