@@ -196,10 +196,10 @@ async def updateDatasets():
     geoJSON = {}
     
     request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/index.json?page=1&itemsPerPage=50")
-    geoJSON = json.loads(request.data)
 
     institutions=[]
     try:
+        geoJSON = json.loads(request.data)
         table=geoJSON["table"]
         institutions += [row[0] for row in table["rows"] if len(row)>0]
     except:
@@ -208,8 +208,8 @@ async def updateDatasets():
     rows=[]
     for institution in institutions:
         request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/%s/index.json?page=1&itemsPerPage=50"%institution)
-        geoJSON = json.loads(request.data)
         try:
+            geoJSON = json.loads(request.data)
             table=geoJSON["table"]
             rows += [row for row in table["rows"] if row[0].endswith("_by_time_lat_lon")]
         except:
@@ -251,7 +251,8 @@ def Every5s():
         datasetsPending=True
         aio.run(updateDatasets())            
 
-timer.set_timeout(Every5s, 0)
+Every5s()
+timer.set_timeout(Every5s, 5000)
 
 #animation/timed updates
 # ##############################
