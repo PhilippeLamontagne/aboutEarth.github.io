@@ -61,6 +61,7 @@ async def refreshPageSize():
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
     csvText = ""
+    sel = html.SELECT(size=1, multiple=False)
     item = ("Select a station:")
     option = html.OPTION(item)
     option.value = "-1"
@@ -70,7 +71,6 @@ async def refreshPageSize():
         if entries>0:
             pages =  (entries+pageSize-1)//pageSize # double-slash is integer division
             holdPageNum = pageNum
-            sel = html.SELECT(size=1, multiple=False)
             if (holdPageNum>=pages) or (holdPageNum<0):
                 holdPageNum = pages-1
             else:
