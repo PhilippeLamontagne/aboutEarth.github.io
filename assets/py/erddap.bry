@@ -158,7 +158,7 @@ async def updateTicker():
         #fields=records[-1]
         #latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
         sel = document["pageOfDatasets"]
-        featuredDatasets = [option.value for option in sel if option.selected and len(option.value)>0]
+        featuredDatasets = [option.value for option in sel if option.selected and option.value!="blank"]
         for dataset in featuredDatasets:
             #request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
             try:
@@ -195,7 +195,7 @@ async def updateDatasets():
     sel = html.SELECT(size=1, multiple=False)
     item = ("Select datasets:")
     option = html.OPTION(item)
-    option.value = ""
+    option.value = "blank"
     sel <= option
     chosen = 0
     for row in rows:
