@@ -60,6 +60,11 @@ async def refreshPageSize():
     window.updateGeoJSON(json.dumps(geoJSON))   
     document["nextpage"].disabled=True
     document["formerpage"].disabled=True
+    csvText = ""
+    item = ("Select a station:")
+    option = html.OPTION(item)
+    option.value = "-1"
+    sel <= option
     try:
         entries = len(geoJSON["features"])
         if entries>0:
@@ -77,11 +82,6 @@ async def refreshPageSize():
             chosen = choice = pageSize*holdPageNum
 
             language = "_en"
-            item = ("Select a station:")
-            option = html.OPTION(item)
-            option.value = "-1"
-            sel <= option
-            csvText = ""
             for feature in geoJSON["features"][choice:choice+pageSize]:
                 type = feature["type"]
                 geometry = feature["geometry"]
@@ -106,14 +106,15 @@ async def refreshPageSize():
                 ])
                 csvText += "\n"
                 chosen += 1
-            document["csv"].value=csvText
-            if "pageOfStations" in document:
-                document["pageOfStations"].remove()
-            sel.id=sel.name="pageOfStations"
-            sel.bind("change", updateMap)
-            document["stations"] <= sel
     except:
         pass
+
+    document["csv"].value=csvText
+    if "pageOfStations" in document:
+        document["pageOfStations"].remove()
+    sel.id=sel.name="pageOfStations"
+    sel.bind("change", updateMap)
+    document["stations"] <= sel
 
 def updatePageSize(ev):
     global pageSize,pageNum
