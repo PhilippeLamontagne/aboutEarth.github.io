@@ -154,19 +154,19 @@ async def updateTicker():
     reports= [line for line in lines for id in featuredStations if line.startswith( "%i,"%(int(id)) )] 
     records = [ list(report.split(",")) for report in reports if all([f for f in report.split(",")])]
     datasets = []
-    if True:#len(records)>0:
-        #fields=records[-1]
-        #latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
+    if len(records)>0:
+        fields=records[-1]
+        latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
         sel = document["pageOfDatasets"]
         featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
         for dataset in featuredDatasets:
-            #request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
+            request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
             try:
-                #geoJSON = json.loads(request.data)
-                datasets += [dataset]
+                geoJSON = json.loads(request.data)
+                datasets += [json.dumps(geoJSON)]
             except:
                 pass
-    document["ticker"].value="\n".join([",".join(record) for record in records]+["===="])
+    document["ticker"].value="\n".join([",".join(record) for record in records]+["===="]+datasets)
     
 async def updateDatasets():
     geoJSON = {}
