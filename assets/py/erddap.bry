@@ -166,7 +166,7 @@ async def updateTicker():
                 datasets += [dataset]
             except:
                 pass
-    document["ticker"].value=("\n".join(featuredStations+datasets+reports))+"===="+repr(records)
+    document["ticker"].value="\n".join([",".join(record) for record in records]+["===="])
     
 async def updateDatasets():
     geoJSON = {}
