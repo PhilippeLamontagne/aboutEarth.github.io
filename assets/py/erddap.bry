@@ -187,7 +187,7 @@ async def updateDatasets():
         try:
             geoJSON = json.loads(request.data)
             table=geoJSON["table"]
-            rows += [row for row in table["rows"] if row[0].endswith("_by_time_lat_lon")]
+            rows += [row for row in table["rows"] if row[0].endswith("_by_time_lat_lon") or row[0].endswith("_by_time12_lat_lon") or row[0].endswith("_by_time16_lat_lon")]
         except:
             pass
             
