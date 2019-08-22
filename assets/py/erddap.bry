@@ -150,12 +150,12 @@ async def updateTicker():
     sel = document["pageOfStations"]
     csvText = document["csv"].value
     featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
-    lines = [line for line in csvText.split("\n") if any([line.startswith(t+",") for t in featuredStations])]
+    lines = [line for line in csvText.split("\n")]# if any([line.startswith(t+",") for t in featuredStations])]
     reports= [ line.split(",") for line in lines for id in featuredStations if line.startswith(id+",")] 
     #reports= [ line.split(",") for line in lines] 
     records = [ report for report in reports]# if all([len(f)>0 for f in report])]
     datasets = []
-    if len(records)>0:
+    if True:#len(records)>0:
         #fields=records[-1]
         #latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
         sel = document["pageOfDatasets"]
@@ -167,7 +167,7 @@ async def updateTicker():
                 datasets += [dataset]
             except:
                 pass
-    document["ticker"].value="\n".join(datasets+lines)#[",".join(record) for record in records])
+    document["ticker"].value=("%i\n"%len(featuredStations))+"\n".join(datasets+lines)#[",".join(record) for record in records])
     
 async def updateDatasets():
     geoJSON = {}
