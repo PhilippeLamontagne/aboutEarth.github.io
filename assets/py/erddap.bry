@@ -156,7 +156,11 @@ async def updateTicker():
     datasets = []
     if len(records)>0:
         fields=records[-1]
-        latllonalt = [float(fields[-2]), 360.0+float(fields[-1]),0.0] 
+        latllonalt = [float(fields[-2]), float(fields[-1]),0.0]
+        mostNorth=latllonalt[0]+1.5
+        leastNorth=latllonalt[0]-1.5
+        leastWest=360.0+latllonalt[1]+1.5
+        mostWest=360.0+latllonalt[1]-1.5
         sel = document["pageOfDatasets"]
         featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
         for dataset in featuredDatasets:
@@ -165,7 +169,13 @@ async def updateTicker():
                 geoJSON = json.loads(request.data)
                 table=geoJSON["table"]
                 variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
-                datasets += [",".join(variables)]
+                datasets += [",".join(variables)] 
+                variables=[variable+"[(last)][(%05.2f):(%05.2f)][(%06.2f):(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
+                query=("https://www.ncei.noaa.gov/erddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
+                request = await aio.get(query)
+                geoJSON = json.loads(request.data)
+                table=geoJSON["table"]
+                datasets += [repr(row) for row in table["rows"]]
             except:
                 pass
     document["ticker"].value="\n".join([",".join(record) for record in records]+["===="]+datasets)
@@ -213,7 +223,7 @@ async def updateDatasets():
 stationsPending=False;
 datasetsPending=False;
 datasetPending=False;
-def Every5s():
+def Every8s():
     global stationsPending;
     global datasetsPending;
     global datasetPending;
@@ -235,10 +245,9 @@ def Every5s():
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
-    timer.set_timeout(Every5s, 5000)
+    timer.set_timeout(Every8s, 8000)
 
-Every5s()
-timer.set_timeout(Every5s, 5000)
+Every8s()
 
 #animation/timed updates
 # ##############################
