@@ -447,8 +447,8 @@ async def updateTicker():
                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
                if len(variables)>0:
                    document["ticker"].value="====" #in case an uncaught error occurs
-                   ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
-                   #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
+                   #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+                   ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
                    query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
                    request = await aio.get(query)
                    try:
