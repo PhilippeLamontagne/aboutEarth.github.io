@@ -333,7 +333,7 @@ async def updateTicker():
             except:
                 pass
     datasets+=["===="]
-    document["ticker"].value="\n".join([datasets)
+    document["ticker"].value="\n".join(datasets)
     
 async def updateDatasets():
     geoJSON = {}
