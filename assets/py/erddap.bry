@@ -304,6 +304,8 @@ document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
 def purgeFields():
+    if document["ticker"].value!="====":
+        document["ticker"].value="":
     if "pageOfVariables" in document:
         document["pageOfVariables"].remove()
     if "pageOfMins" in document:
@@ -422,6 +424,7 @@ async def updateDatasets():
 
 async def updateTicker():    
     datasets = []
+    document["ticker"].value="====" #in case an uncaught error occurs
     if "pageOfVariables" in document:
         sel = document["pageOfStations"]
         csvText = document["csv"].value
@@ -440,25 +443,15 @@ async def updateTicker():
             featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
             for dataset in featuredDatasets[-1:]:
                 variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
-                try:
-                   ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
-                   query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
-                   request = await aio.get(query)
+               ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+               #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
+               query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
+               request = await aio.get(query)
+               try:
                    geoJSON = json.loads(request.data)
                    table=geoJSON["table"]
-                except:
-                   ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
-                   query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
-                   request = await aio.get(query)
-                   try:
-                       geoJSON = json.loads(request.data)
-                       table=geoJSON["table"]
-                   except:
-                        table = {"rows":[]}
-
-                try:
                     datasets += [repr(row) for row in table["rows"]]
-                except:
+               except:
                     pass
     datasets+=["===="]
     document["ticker"].value="\n".join(datasets)
@@ -477,15 +470,14 @@ def Every8s():
         aio.run(refreshPageSize())
     if ("pageOfDatasets" in document):
         datasetsPending=False
-        if document["ticker"].value!="":
-            if not datasetPending:
-                document["ticker"].value=""
-            datasetPending=False
-        elif not datasetPending:
-            #if "pageOfFields" in document:
-            datasetPending=True;
-            #document["ticker"].value="Ticker temporarily disabled"
-            aio.run(updateTicker())
+        if document["ticker"].value!="====":
+            if document["ticker"].value!="":
+                if not datasetPending:
+                    document["ticker"].value=""
+                datasetPending=False
+            elif not datasetPending:
+                datasetPending=True;
+                aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
