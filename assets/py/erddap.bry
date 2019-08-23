@@ -170,7 +170,7 @@ async def updateTicker():
                 table=geoJSON["table"]
                 variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
                 datasets += [",".join(variables)] 
-                variables=[variable+"[(last)][(%05.2f):(%05.2f)][(%06.2f):(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
+                variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
                 query=("https://www.ncei.noaa.gov/erddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
                 request = await aio.get(query)
                 geoJSON = json.loads(request.data)
