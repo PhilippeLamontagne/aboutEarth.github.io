@@ -80,6 +80,8 @@ lines[-1].y_range_name=("direction")
 lines[-1].visible = False
 
 def updateDataRanges(ev):
+    if document["ticker"].value=="====":
+        document["ticker"].value=""
     ydr["start"]=0.0
     ydr["end"]=200.0
     yra.visible = True  #demo: to be used for vector direction
@@ -424,7 +426,7 @@ async def updateDatasets():
 
 async def updateTicker():    
     datasets = []
-    document["ticker"].value="====" #in case an uncaught error occurs
+    document["ticker"].value="" #in case an uncaught error occurs
     if "pageOfVariables" in document:
         sel = document["pageOfStations"]
         csvText = document["csv"].value
@@ -443,16 +445,18 @@ async def updateTicker():
             featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
             for dataset in featuredDatasets[-1:]:
                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
-               ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
-               #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
-               query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
-               request = await aio.get(query)
-               try:
-                   geoJSON = json.loads(request.data)
-                   table=geoJSON["table"]
-                   datasets += [repr(row) for row in table["rows"]]
-               except:
-                   pass
+               if len(variables)>0:
+                   document["ticker"].value="====" #in case an uncaught error occurs
+                   ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+                   #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
+                   query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
+                   request = await aio.get(query)
+                   try:
+                       geoJSON = json.loads(request.data)
+                       table=geoJSON["table"]
+                       datasets += [repr(row) for row in table["rows"]]
+                   except:
+                       pass
     datasets+=["===="]
     document["ticker"].value="\n".join(datasets)
     
