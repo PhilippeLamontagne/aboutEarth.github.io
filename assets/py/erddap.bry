@@ -322,11 +322,11 @@ async def refreshFields():
         option = html.OPTION(item)
         option.value = "blank"
         sel <= option
-        item = ("0")
+        item = ("-1000")
         option = html.OPTION(item)
         option.value = "blank"
         mins <= option
-        item = ("200")
+        item = ("1000")
         option = html.OPTION(item)
         option.value = "blank"
         maxs <= option
@@ -336,15 +336,28 @@ async def refreshFields():
             table=geoJSON["table"]
             variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
             for variable in variables:
+                ranges={
+                    "Kelvins":("230","320"),
+                    "Celsius":("-50","50"),
+                    "degC":("-50","50"),
+                    "Farenheit":("-60","130"),
+                    "degF":("-60","130"),
+                    "Pa":("85000","110000"),
+                    "kPa":("85.000","110.000"),
+                    "m/s":("0.000","110.000")
+                }
+                units=[row[-1] for row in table["rows"] if row[0:3]==["attribute",variable,"units"] ]
+                range = [("-1000.0","1000.0")] + [ranges[unit] for unit in units if unit in ranges]
                 item = (variable)
                 option = html.OPTION(item)
                 option.value = variable
                 sel <= option
-                item = ("-10.0") #TODO: determine lower range of data
+                
+                item = (range[-1][0])
                 option = html.OPTION(item)
                 option.value = variable
                 mins <= option
-                item = ("10.0") #TODO: determine upper range of data
+                item = (range[-1][1])
                 option = html.OPTION(item)
                 option.value = variable
                 maxs <= option
@@ -425,7 +438,7 @@ async def updateTicker():
             sel = document["pageOfDatasets"]
             featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
             for dataset in featuredDatasets[-1:]:
-                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank"]
+                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
                 variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
                 query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
                 request = await aio.get(query)
