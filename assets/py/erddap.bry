@@ -335,7 +335,9 @@ async def refreshFields():
             geoJSON = json.loads(request.data)
             table=geoJSON["table"]
             variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
-
+        except:
+            pass
+            
         purgeFields();
         sel.id=sel.name="pageOfVariables"
         sel.bind("change", updateDataRanges)
