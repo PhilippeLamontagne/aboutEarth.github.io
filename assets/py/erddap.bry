@@ -415,7 +415,7 @@ async def updateTicker():
         lines = [line for line in csvText.split("\n") if len(line)>0 ]
         reports= [line for line in lines for id in featuredStations if line.startswith( "%i,"%(int(id)) )] 
         records = [ list(report.split(",")) for report in reports if all([f for f in report.split(",")])]
-        for fields in if records[-1:]:
+        for fields in records[-1:]:
             #fields=records[-1]
             latllonalt = [float(fields[-2]), float(fields[-1]),0.0]
             mostNorth=latllonalt[0]+1.5
