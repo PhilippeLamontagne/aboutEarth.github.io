@@ -381,6 +381,8 @@ async def updateTicker():
     lines = [line for line in csvText.split("\n") if len(line)>0 ]
     reports= [line for line in lines for id in featuredStations if line.startswith( "%i,"%(int(id)) )] 
     records = [ list(report.split(",")) for report in reports if all([f for f in report.split(",")])]
+    sel = document["pageOfDatasets"]
+    featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
     datasets = []
     if len(records)>0:
         fields=records[-1]
@@ -389,16 +391,17 @@ async def updateTicker():
         leastNorth=latllonalt[0]-1.5
         leastWest=360.0+latllonalt[1]+1.5
         mostWest=360.0+latllonalt[1]-1.5
-        variables=[variable.value for variable in document["pageOfFields"] if variable.value!="blank"]
-        variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
-        query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
-        request = await aio.get(query)
-        try:
-            geoJSON = json.loads(request.data)
-            table=geoJSON["table"]
-            datasets += ",".join([repr(field) for row in table["rows"] for field in row])
-        except:
-            pass
+        for dataset in featuredDatasets:
+            variables=[variable.value for variable in document["pageOfFields"] if variable.value!="blank"]
+            variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+            query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
+            request = await aio.get(query)
+            try:
+                geoJSON = json.loads(request.data)
+                table=geoJSON["table"]
+                datasets += ",".join([repr(field) for row in table["rows"] for field in row])
+            except:
+                pass
     datasets+=["===="]
     document["ticker"].value="\n".join(datasets)
     
