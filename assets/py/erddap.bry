@@ -82,7 +82,7 @@ def updateDataRanges(ev):
                 ydr["end"]=110.0
                 yra.visible = False
                 lines[-1].visible = False
-            else 
+            else:
                 ydr["start"]=0.0
                 ydr["end"]=200.0
                 yra.visible = True
