@@ -432,7 +432,7 @@ async def updateTicker():
                 try:
                     geoJSON = json.loads(request.data)
                     table=geoJSON["table"]
-                    datasets += ",".join([repr(row) for row in table["rows"]])
+                    datasets += [repr(row) for row in table["rows"]]
                 except:
                     pass
     datasets+=["===="]
