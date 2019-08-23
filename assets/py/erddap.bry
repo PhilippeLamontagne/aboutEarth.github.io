@@ -95,8 +95,8 @@ def updateDataRanges(ev):
             ydr["start"]=min([float(option.text) for option in mins])
             ydr["end"]=max([float(option.text) for option in maxs])
             if fieldId != "blank":
-                yra.visible = True  #demo: to be used for vector direction
-                lines[-1].visible = True #demo: to be used for vector direction
+                yra.visible = False  #TODO: to be used for vector direction
+                lines[-1].visible = False #TODO: to be used for vector direction
     
 updateDataRanges(None)
 
@@ -406,6 +406,38 @@ async def updateDatasets():
     document["datasets"] <= sel
 
 
+async def updateTicker():    
+    datasets = []
+    if "pageOfVariables" in document:
+        sel = document["pageOfStations"]
+        csvText = document["csv"].value
+        featuredStations = [option.value for option in sel if option.selected and (int(option.value)>=0)]
+        lines = [line for line in csvText.split("\n") if len(line)>0 ]
+        reports= [line for line in lines for id in featuredStations if line.startswith( "%i,"%(int(id)) )] 
+        records = [ list(report.split(",")) for report in reports if all([f for f in report.split(",")])]
+        for fields in if records[-1:]:
+            #fields=records[-1]
+            latllonalt = [float(fields[-2]), float(fields[-1]),0.0]
+            mostNorth=latllonalt[0]+1.5
+            leastNorth=latllonalt[0]-1.5
+            leastWest=360.0+latllonalt[1]+1.5
+            mostWest=360.0+latllonalt[1]-1.5
+            sel = document["pageOfDatasets"]
+            featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
+            for dataset in featuredDatasets[-1:]:
+                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank"]
+                variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+                query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
+                request = await aio.get(query)
+                try:
+                    geoJSON = json.loads(request.data)
+                    table=geoJSON["table"]
+                    datasets += ",".join([repr(row) for row in table["rows"]])
+                except:
+                    pass
+    datasets+=["===="]
+    document["ticker"].value="\n".join(datasets)
+    
 stationsPending=False;
 datasetsPending=False;
 datasetPending=False;
@@ -427,8 +459,8 @@ def Every8s():
         elif not datasetPending:
             #if "pageOfFields" in document:
             datasetPending=True;
-            document["ticker"].value="Ticker temporarily disabled"
-            #aio.run(updateTicker())
+            #document["ticker"].value="Ticker temporarily disabled"
+            aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
