@@ -443,13 +443,19 @@ async def updateTicker():
                    ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
                    query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
                    request = await aio.get(query)
+                   geoJSON = json.loads(request.data)
+                   table=geoJSON["table"]
                 except:
                    ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
                    query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
                    request = await aio.get(query)
+                   try:
+                       geoJSON = json.loads(request.data)
+                       table=geoJSON["table"]
+                   except:
+                        table = {"rows":[]}
+
                 try:
-                    geoJSON = json.loads(request.data)
-                    table=geoJSON["table"]
                     datasets += [repr(row) for row in table["rows"]]
                 except:
                     pass
