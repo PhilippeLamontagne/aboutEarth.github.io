@@ -330,25 +330,6 @@ async def refreshFields():
         option = html.OPTION(item)
         option.value = "0"
         maxs <= option
-        request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
-        try:
-            geoJSON = json.loads(request.data)
-            table=geoJSON["table"]
-            variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
-            for variable in variables:
-                item = (variable)
-                option = html.OPTION(item)
-                option.value = variable
-                sel <= option
-                item = ("-10.0")#TODO: determine lower limit of data
-                option = html.OPTION(item)
-                option.value = variable
-                mins <= option
-                item = ("10.0")#TODO: determine upper limit of data
-                option = html.OPTION(item)
-                option.value = variable
-                maxs <= option
-                choice += 1
 
         purgeFields();
         sel.id=sel.name="pageOfVariables"
