@@ -305,7 +305,7 @@ document["lastpage"].bind("click", lastPage)
 
 def purgeFields():
     if document["ticker"].value!="====":
-        document["ticker"].value="":
+        document["ticker"].value=""
     if "pageOfVariables" in document:
         document["pageOfVariables"].remove()
     if "pageOfMins" in document:
