@@ -80,23 +80,23 @@ lines[-1].y_range_name=("direction")
 lines[-1].visible = False
 
 def updateDataRanges(ev):
+    ydr["start"]=0.0
+    ydr["end"]=200.0
+    yra.visible = True  #demo: to be used for vector direction
+    lines[-1].visible = True #demo: to be used for vector direction
     if "pageOfVariables" in document:
         sel = document["pageOfVariables"]
         fieldIds = [option.value for option in sel if option.selected]
-        for filedId in fieldIds[-1:]:
+        for fieldId in fieldIds[-1:]:
             mins = [option for option in document["pageOfMins"] if option.value==fieldId]
             mins[-1].selected=1
             maxs = [option for option in document["pageOfMaxs"] if option.value==fieldId]
             maxs[-1].selected=1
             ydr["start"]=min([float(option.text) for option in mins])
             ydr["end"]=max([float(option.text) for option in maxs])
-            yra.visible = False
-            lines[-1].visible = False
-    else:
-        ydr["start"]=0.0
-        ydr["end"]=200.0
-        yra.visible = True  #demo: to be used for vector direction
-        lines[-1].visible = True #demo: to be used for vector direction
+            if fieldId != "blank":
+                yra.visible = True  #demo: to be used for vector direction
+                lines[-1].visible = True #demo: to be used for vector direction
     
 updateDataRanges(None)
 
@@ -324,11 +324,11 @@ async def refreshFields():
         sel <= option
         item = ("0")
         option = html.OPTION(item)
-        option.value = "0"
+        option.value = "blank"
         mins <= option
-        item = ("0")
+        item = ("200")
         option = html.OPTION(item)
-        option.value = "0"
+        option.value = "blank"
         maxs <= option
         request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
         try:
