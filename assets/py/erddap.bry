@@ -458,11 +458,9 @@ async def updateTicker():
     
 stationsPending=False;
 datasetsPending=False;
-datasetPending=False;
 def Every8s():
     global stationsPending;
     global datasetsPending;
-    global datasetPending;
     if ("pageOfStations" in document):
         stationsPending=False
     elif not stationsPending:
@@ -472,11 +470,8 @@ def Every8s():
         datasetsPending=False
         if document["ticker"].value!="====":
             if document["ticker"].value!="":
-                if not datasetPending:
-                    document["ticker"].value=""
-                datasetPending=False
-            elif not datasetPending:
-                datasetPending=True;
+                document["ticker"].value=""
+            else:
                 aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
