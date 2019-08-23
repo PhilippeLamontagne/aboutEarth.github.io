@@ -175,10 +175,11 @@ async def updateTicker():
                 request = await aio.get(query)
                 geoJSON = json.loads(request.data)
                 table=geoJSON["table"]
-                datasets += [repr(row) for row in table["rows"]]
+                datasets += ",".join([repr(field) for row in table["rows"] for field in row])
             except:
                 pass
-    document["ticker"].value="\n".join([",".join(record) for record in records]+["===="]+datasets)
+    datasets+=["===="]
+    document["ticker"].value="\n".join([datasets)
     
 async def updateDatasets():
     geoJSON = {}
