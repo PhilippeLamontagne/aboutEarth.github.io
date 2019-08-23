@@ -310,6 +310,70 @@ document["formerpage"].bind("click", formerPage)
 document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
+def purgeFields():
+    if "pageOfVariables" in document:
+        document["pageOfVariables"].remove()
+    if "pageOfMins" in document:
+        document["pageOfMins"].remove()
+    if "pageOfMaxs" in document:
+        document["pageOfMaxs"].remove()
+
+async def refreshFields(): 
+    sel = document["pageOfDatasets"]
+    featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
+
+    sel = html.SELECT(size=1, multiple=False)
+    mins = html.SELECT(size=1, multiple=False)
+    maxs = html.SELECT(size=1, multiple=False)
+    item = ("Select a field:")
+    option = html.OPTION(item)
+    option.value = "blank"
+    sel <= option
+    item = ("0")
+    option = html.OPTION(item)
+    option.value = "0"
+    mins <= option
+    item = ("0")
+    option = html.OPTION(item)
+    option.value = "0"
+    maxs <= option
+    for dataset in featuredDatasets:
+        request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
+        try:
+            geoJSON = json.loads(request.data)
+            table=geoJSON["table"]
+            variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
+            choice = 0
+            for variable in variables:
+                item = (variable)
+                option = html.OPTION(item)
+                option.value = variable
+                sel <= option
+                item = ("0")
+                option = html.OPTION(item)
+                option.value = "%i"%choice
+                mins <= option
+                item = ("0")
+                option = html.OPTION(item)
+                option.value = "%i"%choice
+                maxs <= option
+                choice += 1
+
+    purgeFields();
+    sel.id=sel.name="pageOfVariables"
+    sel.bind("change", updateDataRanges)
+    mins.id=mins.name="pageOfMins"
+    mins.disabled=True
+    maxs.id=maxs.name="pageOfMaxs"
+    maxs.disabled=True
+    document["fields"] <= sel
+    document["fields"] <= mins
+    document["fields"] <= maxs
+    
+def resetFields():
+    purgeFields();
+    aio.run(refreshFields())
+
 async def updateTicker():    
     sel = document["pageOfStations"]
     csvText = document["csv"].value
@@ -325,25 +389,16 @@ async def updateTicker():
         leastNorth=latllonalt[0]-1.5
         leastWest=360.0+latllonalt[1]+1.5
         mostWest=360.0+latllonalt[1]-1.5
-        sel = document["pageOfDatasets"]
-        featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
-        for dataset in featuredDatasets:
-            request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
-            try:
-                geoJSON = json.loads(request.data)
-                table=geoJSON["table"]
-                variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
-                datasets += [",".join(variables)] 
-                variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
-                #TODO: initialize list of fields
-                #document["field"].bind("change", updateDataRanges)
-                query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
-                request = await aio.get(query)
-                geoJSON = json.loads(request.data)
-                table=geoJSON["table"]
-                datasets += ",".join([repr(field) for row in table["rows"] for field in row])
-            except:
-                pass
+        variables=[variable.value for variable in document["pageOfFields"] if variable.value!="blank"]
+        variables=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
+        query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(variables))+"&.draw=surface"
+        request = await aio.get(query)
+        try:
+            geoJSON = json.loads(request.data)
+            table=geoJSON["table"]
+            datasets += ",".join([repr(field) for row in table["rows"] for field in row])
+        except:
+            pass
     datasets+=["===="]
     document["ticker"].value="\n".join(datasets)
     
@@ -385,6 +440,7 @@ async def updateDatasets():
     if "pageOfDatasets" in document:
         document["pageOfDatasets"].remove()
     sel.id=sel.name="pageOfDatasets"
+    sel.bind("change", resetFields)
     document["datasets"] <= sel
 
 stationsPending=False;
@@ -406,9 +462,9 @@ def Every8s():
                 document["ticker"].value=""
             datasetPending=False
         elif not datasetPending:
-            datasetPending=True;
-            #document["ticker"].value="Cannot update Ticker"
-            aio.run(updateTicker())
+            if "pageOfFields" in document:
+                datasetPending=True;
+                aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
         aio.run(updateDatasets())            
