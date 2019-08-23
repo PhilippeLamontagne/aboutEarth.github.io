@@ -350,7 +350,7 @@ async def refreshFields():
     document["fields"] <= maxs
 
 
-def resetFields():
+def resetFields(ev):
     purgeFields();
     aio.run(refreshFields())
 
