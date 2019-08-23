@@ -442,7 +442,7 @@ async def updateTicker():
             sel = document["pageOfDatasets"]
             featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
             for dataset in featuredDatasets[-1:]:
-                variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
+               variables=[variable.value for variable in document["pageOfVariables"] if variable.value!="blank" and variable.selected]
                ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(leastNorth,mostNorth,mostWest,leastWest) for variable in variables]
                #ranges=[variable+"[(last)][(%05.2f):1:(%05.2f)][(%06.2f):1:(%06.2f)]"%(mostNorth,leastNorth,mostWest,leastWest) for variable in variables]
                query=("https://www.ncei.noaa.gov/erddap/griddap/%s.json?"%dataset)+(",".join(ranges))+"&.draw=surface"
