@@ -16,7 +16,7 @@ This site is currently under construction and is provided AS IS to serve as a re
         <textarea  id="ticker" rows="4" cols="125" name="ticker" disabled="1" readonly="1" ></textarea> 
 </td></tr><tr><td>
 <div name="datasets" id="datasets"></div><br />
-<select name="field" id="field"><option value="T" selected="1">Temperature</option><option value="P">Pressure</option><option value="W">Wind</option></select><br />
+<div name="fields" id="fields"></div><br />
 <div id="graphs"></div>
 </td></tr>
 </tbody></table>
