@@ -310,6 +310,89 @@ document["formerpage"].bind("click", formerPage)
 document["firstpage"].bind("click", firstPage)
 document["lastpage"].bind("click", lastPage)
 
+def purgeFields():
+    if "pageOfVariables" in document:
+        document["pageOfVariables"].remove()
+    if "pageOfMins" in document:
+        document["pageOfMins"].remove()
+    if "pageOfMaxs" in document:
+        document["pageOfMaxs"].remove()
+        
+async def refreshFields(): 
+    sel = document["pageOfDatasets"]
+    featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
+
+    sel = html.SELECT(size=1, multiple=False)
+    mins = html.SELECT(size=1, multiple=False)
+    maxs = html.SELECT(size=1, multiple=False)
+    item = ("Select a field:")
+    option = html.OPTION(item)
+    option.value = "blank"
+    sel <= option
+    item = ("0")
+    option = html.OPTION(item)
+    option.value = "0"
+    mins <= option
+    item = ("0")
+    option = html.OPTION(item)
+    option.value = "0"
+    maxs <= option
+
+    purgeFields();
+    sel.id=sel.name="pageOfVariables"
+    sel.bind("change", updateDataRanges)
+    mins.id=mins.name="pageOfMins"
+    #mins.disabled=True
+    maxs.id=maxs.name="pageOfMaxs"
+    #maxs.disabled=True
+    document["fields"] <= sel
+    document["fields"] <= mins
+    document["fields"] <= maxs
+
+
+def resetFields():
+    purgeFields();
+    aio.run(refreshFields())
+
+async def updateDatasets():    
+    request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/index.json?page=1&itemsPerPage=50")
+    institutions=[]
+    try:
+        geoJSON = json.loads(request.data)
+        table=geoJSON["table"]
+        institutions += [row[0] for row in table["rows"] if len(row)>0]
+    except:
+        pass
+        
+    rows=[]
+    for institution in institutions:
+        request = await aio.get("https://www.ncei.noaa.gov/erddap/categorize/institution/%s/index.json?page=1&itemsPerPage=50"%institution)
+        try:
+            geoJSON = json.loads(request.data)
+            table=geoJSON["table"]
+            rows += [row for row in table["rows"] if row[0].endswith("_by_time_lat_lon") or row[0].endswith("_by_time12_lat_lon") or row[0].endswith("_by_time16_lat_lon")]
+        except:
+            pass
+            
+    sel = html.SELECT(size=1, multiple=False)
+    item = ("Select datasets:")
+    option = html.OPTION(item)
+    option.value = "blank"
+    sel <= option
+    chosen = 0
+    for row in rows:
+        dataset = row[-1]
+        option = html.OPTION(dataset)
+        option.value = dataset
+        sel <= option
+        chosen += 1
+    if "pageOfDatasets" in document:
+        document["pageOfDatasets"].remove()
+    sel.id=sel.name="pageOfDatasets"
+    sel.bind("change", resetFields)
+    document["datasets"] <= sel
+
+
 stationsPending=False;
 datasetsPending=False;
 datasetPending=False;
@@ -329,12 +412,13 @@ def Every8s():
                 document["ticker"].value=""
             datasetPending=False
         elif not datasetPending:
-            if "pageOfFields" in document:
-                datasetPending=True;
-                #aio.run(updateTicker())
+            #if "pageOfFields" in document:
+            datasetPending=True;
+            document["ticker"].value="Ticker temporarily disabled"
+            #aio.run(updateTicker())
     elif not datasetsPending:
         datasetsPending=True
-        #aio.run(updateDatasets())            
+        aio.run(updateDatasets())            
     timer.set_timeout(Every8s, 8000)
 
 Every8s()
