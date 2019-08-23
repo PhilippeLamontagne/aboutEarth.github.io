@@ -338,6 +338,7 @@ async def refreshFields():
             for variable in variables:
                 ranges={
                     "Kelvins":("230","320"),
+                    "K":("230","320"),
                     "Celsius":("-50","50"),
                     "degC":("-50","50"),
                     "Farenheit":("-60","130"),
