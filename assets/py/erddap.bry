@@ -314,33 +314,52 @@ def purgeFields():
 async def refreshFields(): 
     sel = document["pageOfDatasets"]
     featuredDatasets = [option.value for option in sel if option.selected and (option.value!="blank")]
+    for dataset in featuredDatasets[-1:]:
+        sel = html.SELECT(size=1, multiple=False)
+        mins = html.SELECT(size=1, multiple=False)
+        maxs = html.SELECT(size=1, multiple=False)
+        item = ("Select a field:")
+        option = html.OPTION(item)
+        option.value = "blank"
+        sel <= option
+        item = ("0")
+        option = html.OPTION(item)
+        option.value = "0"
+        mins <= option
+        item = ("0")
+        option = html.OPTION(item)
+        option.value = "0"
+        maxs <= option
+        request = await aio.get("https://www.ncei.noaa.gov/erddap/info/%s/index.json"%dataset)
+        try:
+            geoJSON = json.loads(request.data)
+            table=geoJSON["table"]
+            variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
+            for variable in variables:
+                item = (variable)
+                option = html.OPTION(item)
+                option.value = variable
+                sel <= option
+                item = ("-10.0")#TODO: determine lower limit of data
+                option = html.OPTION(item)
+                option.value = variable
+                mins <= option
+                item = ("10.0")#TODO: determine upper limit of data
+                option = html.OPTION(item)
+                option.value = variable
+                maxs <= option
+                choice += 1
 
-    sel = html.SELECT(size=1, multiple=False)
-    mins = html.SELECT(size=1, multiple=False)
-    maxs = html.SELECT(size=1, multiple=False)
-    item = ("Select a field:")
-    option = html.OPTION(item)
-    option.value = "blank"
-    sel <= option
-    item = ("0")
-    option = html.OPTION(item)
-    option.value = "0"
-    mins <= option
-    item = ("0")
-    option = html.OPTION(item)
-    option.value = "0"
-    maxs <= option
-
-    purgeFields();
-    sel.id=sel.name="pageOfVariables"
-    sel.bind("change", updateDataRanges)
-    mins.id=mins.name="pageOfMins"
-    #mins.disabled=True
-    maxs.id=maxs.name="pageOfMaxs"
-    #maxs.disabled=True
-    document["fields"] <= sel
-    document["fields"] <= mins
-    document["fields"] <= maxs
+        purgeFields();
+        sel.id=sel.name="pageOfVariables"
+        sel.bind("change", updateDataRanges)
+        mins.id=mins.name="pageOfMins"
+        #mins.disabled=True
+        maxs.id=maxs.name="pageOfMaxs"
+        #maxs.disabled=True
+        document["fields"] <= sel
+        document["fields"] <= mins
+        document["fields"] <= maxs
 
 
 def resetFields(ev):
