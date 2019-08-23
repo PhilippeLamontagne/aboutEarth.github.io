@@ -335,6 +335,19 @@ async def refreshFields():
             geoJSON = json.loads(request.data)
             table=geoJSON["table"]
             variables=[row[1] for row in table["rows"] if len(row)>1 and row[0]=="variable"]
+            for variable in variables:
+                item = (variable)
+                option = html.OPTION(item)
+                option.value = variable
+                sel <= option
+                item = ("-10.0") #TODO: determine lower range of data
+                option = html.OPTION(item)
+                option.value = variable
+                mins <= option
+                item = ("10.0") #TODO: determine upper range of data
+                option = html.OPTION(item)
+                option.value = variable
+                maxs <= option
         except:
             pass
             
