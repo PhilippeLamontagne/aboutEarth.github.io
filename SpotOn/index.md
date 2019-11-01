@@ -3,8 +3,6 @@ layout: leaflet
 ---
 ## SpotOn
 
-This web page is reserved for use with the  [OpenStreetMap](https://www.openstreetmap.org/#map=3/71.34/-96.82) client "SpotOn".
-
 This site is currently under construction and is provided AS IS to serve as a reference for similiar endeavours by open data enthusiasts.
 
 <table border="0" style="margin:auto"><tbody>
