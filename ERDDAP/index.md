@@ -56,4 +56,4 @@ async function updateGeoJSON(geoJSON) {
 
 ### Browse the source
 
-This site and the pages it links to can be viewed as source files at [github](https://github.com/StephenMottyNRC/StephenMottyNRC.github.io). 
+This site and the pages it links to can be viewed as source files at [github](https://github.com/aboutEarth/aboutEarth.github.io). 
