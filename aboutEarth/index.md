@@ -17,11 +17,11 @@ The [Meteorological Service of Canada provides an API](https://geo.weather.gc.ca
 Providing local weather data is an easy way to make an important contribution to the future of the Earht and its inhabitants.  There are a number of commercially available system for publishing your data on-line.  As the number of providers of environmental data grows, it becomes necessary to locate a "one-stop shop" that can deal with the inevitable range of formats and protocols.  [ERDDAP](https://www.ncei.noaa.gov/erddap/index.html) provides this one-stop shop.  See the list of client applications hosted on this site for an example of how to use an ERDDAP server to collect complete datasets for environmental studies.
 
 Some example client applications hosted on this site
-   * [ERDDAP](https://StephenMottyNRC.github.io/ERDDAP)
+   * [ERDDAP](/ERDDAP)
    
        Displays a list of Canadian climate stations and receives weather news about from various sources for any selected station.
 
-   * [SpotOn](https://StephenMottyNRC.github.io/SpotOn)
+   * [SpotOn](/SpotOn)
    
        Retrieves current weather data from the [Canadian Government](https://www.canada.ca/en/environment-climate-change/services/weather-general-tools-resources/weather-tools-specialized-data/geospatial-web-services.html) and monitors the accuracy of various weather models for each weather station.
 
@@ -29,4 +29,4 @@ These sites are currently under construction and are provided AS IS to serve as 
 
 ## Browse the source
 
-This site and the pages it links to can be viewed as source files at [github](https://github.com/StephenMottyNRC/StephenMottyNRC.github.io). 
+This site and the pages it links to can be viewed as source files at [github](https://github.com/aboutEarth/aboutEarth.github.io). 
