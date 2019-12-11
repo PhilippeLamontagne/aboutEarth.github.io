@@ -14,7 +14,7 @@ The [Meteorological Service of Canada provides an API](https://geo.weather.gc.ca
    2. Web Coverage Service (WCS) renders grids, point clouds, and general meshes of space/time varying phenomena.
    3. Web Feature Services (WFS) provides parsable data in GeoJSON and other formats
 
-Providing local weather data is an easy way to make an important contribution to the future of the Earht and its inhabitants.  There are a number of commercially available system for publishing your data on-line.  As the number of providers of environmental data grows, it becomes necessary to locate a "one-stop shop" that can deal with the inevitable range of formats and protocols.  [ERDDAP](https://www.ncei.noaa.gov/erddap/index.html) provides this one-stop shop.  See the list of client applications hosted on this site for an example of how to use an ERDDAP server to collect complete datasets for environmental studies.
+Providing local weather data is an easy way to make an important contribution to the future of the Earth and its inhabitants.  There are a number of commercially available system for publishing your data on-line.  As the number of providers of environmental data grows, it becomes necessary to locate a "one-stop shop" that can deal with the inevitable range of formats and protocols.  [ERDDAP](https://www.ncei.noaa.gov/erddap/index.html) provides this one-stop shop.  See the list of client applications hosted on this site for an example of how to use an ERDDAP server to collect complete datasets for environmental studies.
 
 Some example client applications hosted on this site
    * [ERDDAP](/ERDDAP)
